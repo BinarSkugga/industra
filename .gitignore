@@ -1,0 +1,12 @@
+build/
+.gradle/
+.idea/workspace.xml
+
+*.class
+*.jar
+*.war
+*.ear
+
+hs_err_pid*
+
+!gradle-wrapper.jar
