@@ -22,16 +22,35 @@ public class VertexArray {
         this.id = GL30.glGenVertexArrays();
     }
 
-    public void addVertices(FloatVertexBuffer vbo) {
+    public void addFloat(FloatVertexBuffer vbo, int size) {
         vbo.bind();
         GL15.glBufferData(vbo.target(), vbo.data(), vbo.usage());
-        GL20.glVertexAttribPointer(buffers.size(), 2, vbo.type(), false, 0, 0);
+        GL20.glVertexAttribPointer(buffers.size(), size, vbo.type(), false, 0, 0);
         vbo.unbind();
 
         buffers.add(vbo);
     }
 
+    public void addFloat(FloatVertexBuffer vbo) {
+        this.addFloat(vbo, 2);
+    }
+
+    public void addInt(IntVertexBuffer vbo, int size) {
+        vbo.bind();
+        GL15.glBufferData(vbo.target(), vbo.data(), vbo.usage());
+        GL20.glVertexAttribPointer(buffers.size(), size, vbo.type(), false, 0, 0);
+        vbo.unbind();
+
+        buffers.add(vbo);
+    }
+
+    public void addInt(IntVertexBuffer vbo) {
+        this.addInt(vbo, 2);
+    }
+
     public void addIndices(IntVertexBuffer vbo) {
+        vbo.target(GL15.GL_ELEMENT_ARRAY_BUFFER);
+
         vbo.bind();
         GL15.glBufferData(vbo.target(), vbo.data(), vbo.usage());
         this.indices = vbo;
@@ -43,6 +62,7 @@ public class VertexArray {
 
     public void unbind() {
         GL30.glBindVertexArray(0);
+        this.indices.unbind();
     }
 
     public void dispose() {

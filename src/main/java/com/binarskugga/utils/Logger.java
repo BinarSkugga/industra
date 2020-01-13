@@ -6,11 +6,13 @@ package com.binarskugga.utils;
 
 public class Logger {
     public static void error(Object o) {
-        System.err.println(o);
+        if(o instanceof Exception) ((Exception) o).printStackTrace();
+        else System.err.println(o);
     }
 
     public static void error(Object o, int code) {
-        System.err.println(o);
+        if(o instanceof Exception) ((Exception) o).printStackTrace();
+        else System.err.println(o);
         System.exit(code);
     }
 

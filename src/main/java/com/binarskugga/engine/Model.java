@@ -23,7 +23,7 @@ public class Model {
 
         this.va.bind();
         this.va.addIndices(new IntVertexBuffer(indices));
-        this.va.addVertices(new FloatVertexBuffer(vertices));
+        this.va.addFloat(new FloatVertexBuffer(vertices));
         this.va.unbind();
     }
 
@@ -57,7 +57,7 @@ public class Model {
             return new Model(vertices, indices);
         } catch (Exception e) {
             Logger.error(e);
-            Logger.error("Couldn't load model " + model);
+            Logger.error("Couldn't load model." + model);
         }
         return null;
     }

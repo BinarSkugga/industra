@@ -17,8 +17,6 @@ public class IntVertexBuffer extends VertexBuffer {
 
     public IntVertexBuffer(int[] data) {
         super();
-
-        this.target(GL15.GL_ELEMENT_ARRAY_BUFFER);
         this.fill(data);
     }
 
