@@ -5,7 +5,6 @@
 package com.binarskugga.engine;
 
 import lombok.Getter;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -47,7 +46,7 @@ public class VertexArray {
     }
 
     public void dispose() {
-        for(VertexBuffer vbo : this.buffers) vbo.dispose();
+        for (VertexBuffer vbo : this.buffers) vbo.dispose();
         this.indices.dispose();
         GL30.glDeleteVertexArrays(this.id);
     }

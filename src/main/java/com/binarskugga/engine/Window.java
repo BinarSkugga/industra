@@ -30,7 +30,7 @@ public class Window {
     }
 
     public void init() {
-        if(!glfwInit()) Logger.error("GLFW failed to initialize.", 1);
+        if (!glfwInit()) Logger.error("GLFW failed to initialize.", 1);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
@@ -43,7 +43,7 @@ public class Window {
     }
 
     public void run() {
-        while(!glfwWindowShouldClose(this.window)) {
+        while (!glfwWindowShouldClose(this.window)) {
             glfwPollEvents();
             this.context.run();
             glfwSwapBuffers(this.window);

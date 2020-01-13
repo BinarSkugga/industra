@@ -4,13 +4,13 @@
 
 package com.binarskugga.engine;
 
+import com.binarskugga.Constants;
 import com.binarskugga.utils.Clock;
 import com.binarskugga.utils.Logger;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
-import com.binarskugga.Constants;
-import org.lwjgl.opengl.GL11;
 
 public class GLContext {
     private Clock clock = new Clock();
