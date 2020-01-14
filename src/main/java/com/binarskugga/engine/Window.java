@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Window {
+public class Window implements Disposable {
     @Getter private long window;
     @Getter private int width, height;
     @Getter private String title;
@@ -45,11 +45,14 @@ public class Window {
     public void run() {
         while (!glfwWindowShouldClose(this.window)) {
             glfwPollEvents();
+            InputTracker.get().update(this.window);
+
             this.context.run();
             glfwSwapBuffers(this.window);
         }
     }
 
+    @Override
     public void dispose() {
         this.context.dispose();
 

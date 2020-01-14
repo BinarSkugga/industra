@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Model {
+public class Model implements Disposable {
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
@@ -70,6 +70,7 @@ public class Model {
         this.va.unbind();
     }
 
+    @Override
     public void dispose() {
         this.va.dispose();
     }

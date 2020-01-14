@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class VertexArray {
+public class VertexArray implements Disposable {
     private int id;
     @Getter private VertexBuffer indices;
     @Getter private List<VertexBuffer> buffers = new ArrayList<>();
@@ -65,6 +65,7 @@ public class VertexArray {
         this.indices.unbind();
     }
 
+    @Override
     public void dispose() {
         for (VertexBuffer vbo : this.buffers) vbo.dispose();
         this.indices.dispose();
