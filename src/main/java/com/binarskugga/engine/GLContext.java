@@ -7,22 +7,23 @@ package com.binarskugga.engine;
 import com.binarskugga.Constants;
 import com.binarskugga.utils.Clock;
 import com.binarskugga.utils.Logger;
+import lombok.NonNull;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class GLContext {
+public class GLContext implements Disposable {
     private Clock clock = new Clock();
     private Window window;
     private Model model;
 
-    public GLContext(Window window) {
+    public GLContext(@NonNull Window window) {
         this.window = window;
         this.clock.calibrate(60);
     }
 
-    public GLContext(Window window, int fps) {
+    public GLContext(@NonNull Window window, int fps) {
         this.window = window;
         this.clock.calibrate(fps);
     }
@@ -62,6 +63,7 @@ public class GLContext {
         this.clock.tock();
     }
 
+    @Override
     public void dispose() {
         this.model.dispose();
         GL.destroy();

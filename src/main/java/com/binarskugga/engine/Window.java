@@ -6,6 +6,7 @@ package com.binarskugga.engine;
 
 import com.binarskugga.utils.Logger;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -17,13 +18,13 @@ public class Window implements Disposable {
 
     @Setter private GLContext context;
 
-    public Window(int width, int height, String title) {
+    public Window(int width, int height, @NonNull String title) {
         this.width = width;
         this.height = height;
         this.title = title;
     }
 
-    public Window title(String title) {
+    public Window title(@NonNull String title) {
         this.title = title;
         glfwSetWindowTitle(this.window, title);
         return this;

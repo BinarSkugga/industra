@@ -6,6 +6,7 @@ package com.binarskugga.engine;
 
 import com.binarskugga.utils.Logger;
 import lombok.Getter;
+import lombok.NonNull;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -13,11 +14,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+
 public class Model implements Disposable {
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
-    public Model(float[] vertices, int[] indices) {
+    public Model(@NonNull float[] vertices, @NonNull int[] indices) {
         this.va = new VertexArray();
         this.indicesCount = indices.length;
 
@@ -27,7 +30,7 @@ public class Model implements Disposable {
         this.va.unbind();
     }
 
-    public static Model load(String model) {
+    public static Model load(@NonNull String model) {
         try {
             Scanner f = new Scanner(new File("src/main/resources/models/" + model + ".model"));
             ArrayList<String> lines = new ArrayList<>();

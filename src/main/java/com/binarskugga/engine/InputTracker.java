@@ -8,20 +8,33 @@ import com.binarskugga.Constants;
 import com.binarskugga.utils.Logger;
 import lombok.NonNull;
 import lombok.Synchronized;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.lwjgl.glfw.GLFW.glfwGetKey;
 
 public class InputTracker {
     private static InputTracker tracker;
     private Map<Integer, Integer> trackedStates = new HashMap<>();
+    private Set<Method> callbacks;
 
     private InputTracker(@NonNull int[] tracked) {
         for(int input : tracked) {
             this.trackedStates.put(input, 0);
         }
+
+        Reflections ref = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forPackage("com.binarskugga"))
+                .setScanners(new MethodAnnotationsScanner())
+        );
+        this.callbacks = ref.getMethodsAnnotatedWith(OnInput.class);
     }
 
     public void update(long window) {

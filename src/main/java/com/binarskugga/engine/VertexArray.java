@@ -5,6 +5,7 @@
 package com.binarskugga.engine;
 
 import lombok.Getter;
+import lombok.NonNull;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -22,7 +23,7 @@ public class VertexArray implements Disposable, Bound {
         this.id = GL30.glGenVertexArrays();
     }
 
-    public void addFloat(FloatVertexBuffer vbo, int size) {
+    public void addFloat(@NonNull FloatVertexBuffer vbo, int size) {
         vbo.bind();
         GL15.glBufferData(vbo.target(), vbo.data(), vbo.usage());
         GL20.glVertexAttribPointer(buffers.size(), size, vbo.type(), false, 0, 0);
@@ -31,11 +32,11 @@ public class VertexArray implements Disposable, Bound {
         buffers.add(vbo);
     }
 
-    public void addFloat(FloatVertexBuffer vbo) {
+    public void addFloat(@NonNull FloatVertexBuffer vbo) {
         this.addFloat(vbo, 2);
     }
 
-    public void addInt(IntVertexBuffer vbo, int size) {
+    public void addInt(@NonNull IntVertexBuffer vbo, int size) {
         vbo.bind();
         GL15.glBufferData(vbo.target(), vbo.data(), vbo.usage());
         GL20.glVertexAttribPointer(buffers.size(), size, vbo.type(), false, 0, 0);
@@ -44,11 +45,11 @@ public class VertexArray implements Disposable, Bound {
         buffers.add(vbo);
     }
 
-    public void addInt(IntVertexBuffer vbo) {
+    public void addInt(@NonNull IntVertexBuffer vbo) {
         this.addInt(vbo, 2);
     }
 
-    public void addIndices(IntVertexBuffer vbo) {
+    public void addIndices(@NonNull IntVertexBuffer vbo) {
         vbo.target(GL15.GL_ELEMENT_ARRAY_BUFFER);
 
         vbo.bind();
