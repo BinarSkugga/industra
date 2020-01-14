@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class VertexArray implements Disposable {
+public class VertexArray implements Disposable, Bound {
     private int id;
     @Getter private VertexBuffer indices;
     @Getter private List<VertexBuffer> buffers = new ArrayList<>();
@@ -56,10 +56,12 @@ public class VertexArray implements Disposable {
         this.indices = vbo;
     }
 
+    @Override
     public void bind() {
         GL30.glBindVertexArray(this.id);
     }
 
+    @Override
     public void unbind() {
         GL30.glBindVertexArray(0);
         this.indices.unbind();

@@ -27,15 +27,19 @@ public class GLContext {
         this.clock.calibrate(fps);
     }
 
-    public void init() {
-        GL.createCapabilities();
-        Logger.out("OpenGL Version " + glGetString(GL_VERSION));
-
+    private void create2dGraphics() {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
         GL11.glOrtho(0, this.window.width(), this.window.height(), 0, 1, -1);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
+    }
+
+    public void init() {
+        GL.createCapabilities();
+        this.create2dGraphics();
+
+        Logger.out("OpenGL Version " + glGetString(GL_VERSION));
 
         this.model = Model.load("square");
     }
