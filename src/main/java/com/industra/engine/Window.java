@@ -6,7 +6,6 @@ package com.industra.engine;
 
 import com.industra.engine.graphic.GLContext;
 import com.industra.engine.input.InputTracker;
-import com.industra.game.FakePlayer;
 import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
