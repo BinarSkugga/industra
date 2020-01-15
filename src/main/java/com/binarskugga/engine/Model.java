@@ -12,11 +12,10 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
-
-public class Model implements Disposable {
+public class Model implements Disposable, InputListener {
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
@@ -28,6 +27,8 @@ public class Model implements Disposable {
         this.va.addIndices(new IntVertexBuffer(indices));
         this.va.addFloat(new FloatVertexBuffer(vertices));
         this.va.unbind();
+
+        InputTracker.get().subscribe(this);
     }
 
     public static Model load(@NonNull String model) {
@@ -78,13 +79,8 @@ public class Model implements Disposable {
         this.va.dispose();
     }
 
-    @OnInput(keys = {Key.S}, states={})
-    public void moveDown() {
-        Logger.out("down");
-    }
-
-    @OnInput(keys = {Key.S}, states={})
-    public void moveUp() {
-        Logger.out("up");
+    @Override
+    public void onKeyboardInput(List<Integer> pressed, List<Integer> released, List<Integer> idle) {
+        if(pressed.contains(Key.S)) Logger.out("Model S callback");
     }
 }
