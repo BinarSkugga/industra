@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine.input;
+package com.industra.engine.input;
 
 import static org.lwjgl.glfw.GLFW.*;
 

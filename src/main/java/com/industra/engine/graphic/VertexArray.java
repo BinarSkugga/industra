@@ -2,10 +2,10 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine.graphic;
+package com.industra.engine.graphic;
 
-import com.binarskugga.engine.Bound;
-import com.binarskugga.engine.Disposable;
+import com.industra.engine.Bindable;
+import com.industra.engine.Disposable;
 import lombok.Getter;
 import lombok.NonNull;
 import org.lwjgl.opengl.GL15;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class VertexArray implements Disposable, Bound {
+public class VertexArray implements Disposable, Bindable {
     private int id;
     @Getter private VertexBuffer indices;
     @Getter private List<VertexBuffer> buffers = new ArrayList<>();

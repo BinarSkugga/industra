@@ -25,7 +25,6 @@ dependencies {
     implementation("org.lwjgl:lwjgl-opengl:3.2.3")
     implementation("org.joml:joml:1.9.20")
     implementation("org.jbox2d:jbox2d-library:2.2.1.1")
-    implementation('org.reflections:reflections:0.9.11')
 
     runtimeOnly("org.lwjgl:lwjgl:3.2.3:natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-glfw:3.2.3:natives-windows")

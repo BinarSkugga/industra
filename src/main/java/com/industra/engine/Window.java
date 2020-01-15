@@ -2,11 +2,12 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine;
+package com.industra.engine;
 
-import com.binarskugga.engine.graphic.GLContext;
-import com.binarskugga.engine.input.InputTracker;
-import com.binarskugga.utils.Logger;
+import com.industra.engine.graphic.GLContext;
+import com.industra.engine.input.InputTracker;
+import com.industra.game.FakePlayer;
+import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -36,7 +37,6 @@ public class Window implements Disposable {
         if (!glfwInit()) Logger.error("GLFW failed to initialize.", 1);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-
         Logger.out("GLFW Version " + GLFW_VERSION_MAJOR + "." + GLFW_VERSION_MINOR + "." + GLFW_VERSION_REVISION);
 
         this.window = glfwCreateWindow(this.width, this.height, this.title, 0, 0);
@@ -47,11 +47,11 @@ public class Window implements Disposable {
 
     public void run() {
         while (!glfwWindowShouldClose(this.window)) {
-            glfwPollEvents();
-            InputTracker.get().update(this.window);
-
             this.context.run();
             glfwSwapBuffers(this.window);
+
+            glfwPollEvents();
+            InputTracker.get().update(this.window);
         }
     }
 

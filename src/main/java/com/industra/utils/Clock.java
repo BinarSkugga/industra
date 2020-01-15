@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.utils;
+package com.industra.utils;
 
 import lombok.Getter;
 

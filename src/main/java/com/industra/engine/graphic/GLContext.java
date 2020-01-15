@@ -2,13 +2,13 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine.graphic;
+package com.industra.engine.graphic;
 
-import com.binarskugga.Constants;
-import com.binarskugga.engine.Disposable;
-import com.binarskugga.engine.Window;
-import com.binarskugga.utils.Clock;
-import com.binarskugga.utils.Logger;
+import com.industra.Constants;
+import com.industra.engine.Disposable;
+import com.industra.engine.Window;
+import com.industra.utils.Clock;
+import com.industra.utils.Logger;
 import lombok.NonNull;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -20,14 +20,13 @@ public class GLContext implements Disposable {
     private Window window;
     private Model model;
 
-    public GLContext(@NonNull Window window) {
-        this.window = window;
-        this.clock.calibrate(60);
-    }
-
     public GLContext(@NonNull Window window, int fps) {
         this.window = window;
         this.clock.calibrate(fps);
+    }
+
+    public GLContext(@NonNull Window window) {
+        this(window, 60);
     }
 
     private void create2dGraphics() {

@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine;
+package com.industra.engine;
 
-public interface Bound {
+public interface Bindable {
     void bind();
     void unbind();
 }

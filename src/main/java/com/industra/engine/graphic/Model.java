@@ -2,15 +2,14 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine.graphic;
+package com.industra.engine.graphic;
 
-import com.binarskugga.engine.Disposable;
-import com.binarskugga.engine.input.InputList;
-import com.binarskugga.engine.input.InputListener;
-import com.binarskugga.engine.input.InputTracker;
-import com.binarskugga.engine.input.Key;
-import com.binarskugga.utils.Logger;
-import com.google.common.collect.Lists;
+import com.industra.engine.Disposable;
+import com.industra.engine.input.InputList;
+import com.industra.engine.input.InputListener;
+import com.industra.engine.input.InputTracker;
+import com.industra.engine.input.Key;
+import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import org.lwjgl.opengl.GL11;
@@ -18,7 +17,6 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Model implements Disposable, InputListener {
@@ -33,8 +31,6 @@ public class Model implements Disposable, InputListener {
         this.va.addIndices(new IntVertexBuffer(indices));
         this.va.addFloat(new FloatVertexBuffer(vertices));
         this.va.unbind();
-
-        InputTracker.get().subscribe(this);
     }
 
     public static Model load(@NonNull String model) {
@@ -83,17 +79,5 @@ public class Model implements Disposable, InputListener {
     @Override
     public void dispose() {
         this.va.dispose();
-    }
-
-    @Override
-    public void onKeyboardInput(InputList pressed, InputList released, InputList idle) {
-        if(pressed.all(Key.LEFT_CONTROL, Key.S))
-            Logger.out("Model CTRL+S callback pressed");
-        else {
-            if(pressed.has(Key.S))
-                Logger.out("Model S callback");
-            if(released.has(Key.S))
-                Logger.out("Model S callback released");
-        }
     }
 }
