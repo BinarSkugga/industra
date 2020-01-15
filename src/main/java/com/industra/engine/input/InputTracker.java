@@ -63,8 +63,6 @@ public class InputTracker {
             }
         }
 
-        Logger.out(this.trackedStates.get(Key.W));
-
         InputList pressed = new InputList();
         InputList held = new InputList();
         InputList released = new InputList();
