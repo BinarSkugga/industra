@@ -4,10 +4,8 @@
 
 package com.industra.engine.graphic;
 
-import com.industra.Constants;
 import com.industra.engine.Disposable;
 import com.industra.engine.Window;
-import com.industra.utils.Clock;
 import com.industra.utils.Logger;
 import lombok.NonNull;
 import org.lwjgl.opengl.GL;
@@ -16,17 +14,11 @@ import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 
 public class GLContext implements Disposable {
-    private Clock clock = new Clock();
     private Window window;
     private Model model;
 
-    public GLContext(@NonNull Window window, int fps) {
-        this.window = window;
-        this.clock.calibrate(fps);
-    }
-
     public GLContext(@NonNull Window window) {
-        this(window, 60);
+        this.window = window;
     }
 
     private void create2dGraphics() {
@@ -47,8 +39,6 @@ public class GLContext implements Disposable {
     }
 
     public void run() {
-        this.clock.tick();
-
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -59,9 +49,6 @@ public class GLContext implements Disposable {
         this.model.draw();
 
         GL11.glPopMatrix();
-
-        this.window.title(Constants.GAME_TITLE + " - FPS:" + this.clock.fps());
-        this.clock.tock();
     }
 
     @Override

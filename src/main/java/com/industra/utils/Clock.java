@@ -45,7 +45,7 @@ public class Clock {
             int ns = (int) (waitingTime % nsInMillis);
             Thread.sleep(ms, ns);
         } catch (Exception e) {
-            Logger.error("Clock thread skipped a frame.");
+            Logger.error("Clock skipped a frame.");
         }
 
         if (this.nsCount >= nsInSec) {

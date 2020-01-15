@@ -15,7 +15,7 @@ public class Game implements Disposable {
     public void run() {
         this.init();
         this.window = new Window(1280, 720, Constants.GAME_TITLE);
-        this.window.context(new GLContext(this.window, 60));
+        this.window.context(new GLContext(this.window));
         this.window.init();
 
         this.window.run();
