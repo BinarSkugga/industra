@@ -14,6 +14,7 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,16 +26,20 @@ public class InputTracker {
     private Map<Integer, Integer> trackedStates = new HashMap<>();
     private Set<Method> callbacks;
 
-    private InputTracker(@NonNull int[] tracked) {
-        for(int input : tracked) {
-            this.trackedStates.put(input, 0);
-        }
-
+    private InputTracker() {
         Reflections ref = new Reflections(new ConfigurationBuilder()
                 .setUrls(ClasspathHelper.forPackage("com.binarskugga"))
                 .setScanners(new MethodAnnotationsScanner())
         );
         this.callbacks = ref.getMethodsAnnotatedWith(OnInput.class);
+
+        int[] tracked = this.callbacks.stream()
+                .flatMapToInt(m -> Arrays.stream(m.getAnnotation(OnInput.class).keys()))
+                .distinct().toArray();
+
+        for(int input : tracked) {
+            this.trackedStates.put(input, 0);
+        }
     }
 
     public void update(long window) {
@@ -59,7 +64,7 @@ public class InputTracker {
     @Synchronized
     public static InputTracker get() {
         if(tracker == null) {
-            tracker = new InputTracker(Constants.TRACKED_INPUT);
+            tracker = new InputTracker();
         }
         return tracker;
     }

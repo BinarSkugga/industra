@@ -77,4 +77,14 @@ public class Model implements Disposable {
     public void dispose() {
         this.va.dispose();
     }
+
+    @OnInput(keys = {Key.S}, states={})
+    public void moveDown() {
+        Logger.out("down");
+    }
+
+    @OnInput(keys = {Key.S}, states={})
+    public void moveUp() {
+        Logger.out("up");
+    }
 }
