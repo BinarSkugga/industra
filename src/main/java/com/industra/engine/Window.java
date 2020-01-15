@@ -39,7 +39,7 @@ public class Window implements Disposable {
     public void init() {
         if (!glfwInit()) Logger.error("GLFW failed to initialize.", 1);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
         Logger.out("GLFW Version " + GLFW_VERSION_MAJOR + "." + GLFW_VERSION_MINOR + "." + GLFW_VERSION_REVISION);
 
         this.window = glfwCreateWindow(this.width, this.height, this.title, 0, 0);
