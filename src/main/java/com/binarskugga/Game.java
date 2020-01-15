@@ -4,7 +4,7 @@
 
 package com.binarskugga;
 
-import com.binarskugga.engine.GLContext;
+import com.binarskugga.engine.graphic.GLContext;
 import com.binarskugga.engine.Window;
 
 public class Game {

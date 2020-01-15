@@ -4,6 +4,8 @@
 
 package com.binarskugga.engine;
 
+import com.binarskugga.engine.graphic.GLContext;
+import com.binarskugga.engine.input.InputTracker;
 import com.binarskugga.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;

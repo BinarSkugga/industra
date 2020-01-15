@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine;
+package com.binarskugga.engine.input;
 
 import com.binarskugga.Constants;
 import lombok.Synchronized;
@@ -51,9 +51,9 @@ public class InputTracker {
         }
 
         this.listeners.parallelStream().forEach(listener -> {
-            List<Integer> pressed = new ArrayList<>();
-            List<Integer> released = new ArrayList<>();
-            List<Integer> idle = new ArrayList<>();
+            InputList pressed = new InputList();
+            InputList released = new InputList();
+            InputList idle = new InputList();
 
             for(Map.Entry<Integer, Integer> keyState : this.trackedStates.entrySet()) {
                 if(keyState.getValue() == Constants.INPUT_IDLE) idle.add(keyState.getKey());

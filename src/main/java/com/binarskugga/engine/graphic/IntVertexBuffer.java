@@ -2,13 +2,12 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine;
+package com.binarskugga.engine.graphic;
 
 import lombok.Getter;
 import lombok.NonNull;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 
 import java.nio.IntBuffer;
 

@@ -2,8 +2,10 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine;
+package com.binarskugga.engine.graphic;
 
+import com.binarskugga.engine.Bound;
+import com.binarskugga.engine.Disposable;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.opengl.GL15;

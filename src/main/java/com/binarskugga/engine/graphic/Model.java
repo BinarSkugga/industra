@@ -2,8 +2,13 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine;
+package com.binarskugga.engine.graphic;
 
+import com.binarskugga.engine.Disposable;
+import com.binarskugga.engine.input.InputList;
+import com.binarskugga.engine.input.InputListener;
+import com.binarskugga.engine.input.InputTracker;
+import com.binarskugga.engine.input.Key;
 import com.binarskugga.utils.Logger;
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -13,7 +18,6 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -82,13 +86,13 @@ public class Model implements Disposable, InputListener {
     }
 
     @Override
-    public void onKeyboardInput(List<Integer> pressed, List<Integer> released, List<Integer> idle) {
-        if(pressed.containsAll(Lists.newArrayList(Key.LEFT_CONTROL, Key.S)))
+    public void onKeyboardInput(InputList pressed, InputList released, InputList idle) {
+        if(pressed.all(Key.LEFT_CONTROL, Key.S))
             Logger.out("Model CTRL+S callback pressed");
         else {
-            if(pressed.contains(Key.S))
+            if(pressed.has(Key.S))
                 Logger.out("Model S callback");
-            if(released.contains(Key.S))
+            if(released.has(Key.S))
                 Logger.out("Model S callback released");
         }
     }

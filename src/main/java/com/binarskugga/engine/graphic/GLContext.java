@@ -2,9 +2,11 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.binarskugga.engine;
+package com.binarskugga.engine.graphic;
 
 import com.binarskugga.Constants;
+import com.binarskugga.engine.Disposable;
+import com.binarskugga.engine.Window;
 import com.binarskugga.utils.Clock;
 import com.binarskugga.utils.Logger;
 import lombok.NonNull;
