@@ -5,6 +5,7 @@
 package com.binarskugga.engine;
 
 import com.binarskugga.utils.Logger;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NonNull;
 import org.lwjgl.opengl.GL11;
@@ -12,6 +13,7 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -81,6 +83,13 @@ public class Model implements Disposable, InputListener {
 
     @Override
     public void onKeyboardInput(List<Integer> pressed, List<Integer> released, List<Integer> idle) {
-        if(pressed.contains(Key.S)) Logger.out("Model S callback");
+        if(pressed.containsAll(Lists.newArrayList(Key.LEFT_CONTROL, Key.S)))
+            Logger.out("Model CTRL+S callback pressed");
+        else {
+            if(pressed.contains(Key.S))
+                Logger.out("Model S callback");
+            if(released.contains(Key.S))
+                Logger.out("Model S callback released");
+        }
     }
 }

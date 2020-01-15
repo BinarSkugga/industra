@@ -50,7 +50,7 @@ public class InputTracker {
             }
         }
 
-        for(InputListener listener : this.listeners) {
+        this.listeners.parallelStream().forEach(listener -> {
             List<Integer> pressed = new ArrayList<>();
             List<Integer> released = new ArrayList<>();
             List<Integer> idle = new ArrayList<>();
@@ -62,7 +62,7 @@ public class InputTracker {
             }
 
             listener.onKeyboardInput(pressed, released, idle);
-        }
+        });
     }
 
     @Synchronized
