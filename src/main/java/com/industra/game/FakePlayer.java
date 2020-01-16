@@ -11,19 +11,26 @@ import com.industra.engine.input.Key;
 import com.industra.utils.Logger;
 
 public class FakePlayer implements InputListener {
+    private boolean running = false;
+
     public FakePlayer() {
         InputTracker.get().subscribe(this);
     }
 
     @Override
-    public void onKeyboardInput(InputList pressed, InputList held, InputList released, InputList idle) {
+    public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
+        if(dpressed.any(Key.W, Key.S, Key.A, Key.D))
+            this.running = true;
+        if(released.any(Key.W, Key.S, Key.A, Key.D))
+            this.running = false;
+
         if(held.has(Key.W))
-            Logger.out("Move up");
+            Logger.out((this.running ? "Running" : "Walking") + " UP");
         if(held.has(Key.S))
-            Logger.out("Move down");
+            Logger.out((this.running ? "Running" : "Walking") + " DOWN");
         if(held.has(Key.A))
-            Logger.out("Move left");
+            Logger.out((this.running ? "Running" : "Walking") + " LEFT");
         if(held.has(Key.D))
-            Logger.out("Move right");
+            Logger.out((this.running ? "Running" : "Walking") + " RIGHT");
     }
 }
