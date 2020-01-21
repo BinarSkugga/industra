@@ -33,3 +33,16 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl-opengl:3.2.3:natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-stb:3.2.3:natives-windows")
 }
+
+// Generation of the MANIFEST.MF file for running the builds
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.industra.Start'
+        )
+    }
+    // Make sure to include dependencies in the jar
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
