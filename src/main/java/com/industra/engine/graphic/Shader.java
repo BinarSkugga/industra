@@ -10,9 +10,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 
 
 public abstract class Shader {
@@ -34,13 +33,14 @@ public abstract class Shader {
             else if(this.type == GL32.GL_GEOMETRY_SHADER) extension = "geo";
             else extension = "vert";
 
-            BufferedReader reader = new BufferedReader(
-                    new FileReader("src/main/resources/shaders/" + this.name + "." + extension));
+            InputStream shaderStream = Shader.class.getClassLoader().getResourceAsStream("shaders/" + this.name + "." + extension);
+            Scanner scanner = new Scanner(shaderStream);
+
             String line;
-            while((line = reader.readLine()) != null) {
+            while((line = scanner.nextLine()) != null) {
                 source.append(line).append('\n');
             }
-            reader.close();
+            scanner.close();
 
             this.id = GL20.glCreateShader(this.type);
             GL20.glShaderSource(this.id, source);
@@ -49,7 +49,7 @@ public abstract class Shader {
             if(GL20.glGetShaderi(this.id, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
                 Logger.error(GL20.glGetShaderInfoLog(this.id, 500));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO: Don't swallow this
         }
     }
