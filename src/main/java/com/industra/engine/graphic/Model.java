@@ -12,6 +12,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -31,10 +33,11 @@ public class Model implements Disposable, Drawable {
 
     public static Model load(@NonNull String model) {
         try {
-            Scanner f = new Scanner(new File("src/main/resources/models/" + model + ".model"));
+            InputStream modelStream = Model.class.getClassLoader().getResourceAsStream("models/" + model + ".model");
+            Scanner scanner = new Scanner(modelStream);
             ArrayList<String> lines = new ArrayList<>();
-            while (f.hasNext()) lines.add(f.next());
-            f.close();
+            while (scanner.hasNext()) lines.add(scanner.next());
+            scanner.close();
 
             int verticesCount = (int) lines.stream().filter(l -> l.startsWith("V")).count();
             float[] vertices = new float[verticesCount * 2];
