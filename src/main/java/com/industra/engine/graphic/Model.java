@@ -35,10 +35,10 @@ public class Model implements Disposable, InputListener {
     public static Model load(@NonNull String model) {
         try {
             InputStream modelStream = Model.class.getClassLoader().getResourceAsStream("models/" + model + ".model");
-            Scanner f = new Scanner(modelStream);
+            Scanner scanner = new Scanner(modelStream);
             ArrayList<String> lines = new ArrayList<>();
-            while (f.hasNext()) lines.add(f.next());
-            f.close();
+            while (scanner.hasNext()) lines.add(scanner.next());
+            scanner.close();
 
             int verticesCount = (int) lines.stream().filter(l -> l.startsWith("V")).count();
             float[] vertices = new float[verticesCount * 2];
