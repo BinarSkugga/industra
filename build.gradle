@@ -41,4 +41,8 @@ jar {
             'Main-Class': 'com.industra.Start'
         )
     }
+    // Make sure to include dependencies in the jar
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
