@@ -5,7 +5,6 @@
 package com.industra.engine.graphic;
 
 import com.industra.engine.Disposable;
-import com.industra.engine.input.InputListener;
 import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
@@ -16,7 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Model implements Disposable, InputListener {
+public class Model implements Disposable, Drawable {
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
@@ -65,6 +64,7 @@ public class Model implements Disposable, InputListener {
         return null;
     }
 
+    @Override
     public void draw() {
         this.va.bind();
         for (int i = 0; i < this.va.buffers().size(); i++) GL20.glEnableVertexAttribArray(i);

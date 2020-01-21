@@ -4,30 +4,27 @@
 
 package com.industra.game;
 
-import com.industra.Constants;
 import com.industra.engine.Disposable;
 import com.industra.engine.Window;
 import com.industra.engine.graphic.GLContext;
 
 public class Game implements Disposable {
-    private Window window;
-
     public void run() {
         this.init();
-        this.window = new Window(1280, 720, Constants.GAME_TITLE);
-        this.window.context(new GLContext(this.window));
-        this.window.init();
+        Window window = Window.get();
+        window.context(new GLContext());
+        window.init();
 
-        this.window.run();
+        window.run();
         this.dispose();
     }
 
     public void init() {
-        FakePlayer player = new FakePlayer();
+
     }
 
     @Override
     public void dispose() {
-        this.window.dispose();
+        Window.get().dispose();
     }
 }

@@ -3,8 +3,10 @@
 in vec2 position;
 out vec3 color;
 
+uniform mat4 projection;
+uniform mat4 transformation;
 
 void main(void) {
-    gl_Position = vec4(position, 1.0, 1.0);
+    gl_Position = projection * transformation * vec4(position, 1.0, 1.0);
     color = vec3(1, 0, 0); // Red color
 }

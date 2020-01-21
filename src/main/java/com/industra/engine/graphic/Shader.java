@@ -33,12 +33,12 @@ public abstract class Shader {
             else if(this.type == GL32.GL_GEOMETRY_SHADER) extension = "geo";
             else extension = "vert";
 
-            InputStream shaderStream = Shader.class.getClassLoader().getResourceAsStream("shaders/" + this.name + "." + extension);
+            InputStream shaderStream = Shader.class.getClassLoader()
+                    .getResourceAsStream("shaders/" + this.name + "." + extension);
             Scanner scanner = new Scanner(shaderStream);
 
-            String line;
-            while((line = scanner.nextLine()) != null) {
-                source.append(line).append('\n');
+            while(scanner.hasNext()) {
+                source.append(scanner.nextLine()).append('\n');
             }
             scanner.close();
 

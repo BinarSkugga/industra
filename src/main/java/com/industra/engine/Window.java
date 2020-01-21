@@ -4,6 +4,7 @@
 
 package com.industra.engine;
 
+import com.industra.Constants;
 import com.industra.engine.graphic.GLContext;
 import com.industra.engine.input.InputTracker;
 import com.industra.utils.Clock;
@@ -15,6 +16,8 @@ import lombok.Setter;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Window implements Disposable {
+    private static Window instance;
+
     private Clock clock = new Clock();
     @Getter private long window;
     @Getter private int width, height;
@@ -22,12 +25,19 @@ public class Window implements Disposable {
 
     @Setter private GLContext context;
 
-    public Window(int width, int height, @NonNull String title) {
+    private Window(int width, int height, @NonNull String title) {
         // TODO: Assign FPS, width and height from dynamic properties
         this.width = width;
         this.height = height;
         this.title = title;
         this.clock.calibrate(60);
+    }
+
+    public static Window get() {
+        if(instance == null) {
+            instance = new Window(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, Constants.GAME_TITLE);
+        }
+        return instance;
     }
 
     public Window title(@NonNull String title) {
@@ -38,7 +48,7 @@ public class Window implements Disposable {
 
     public void init() {
         if (!glfwInit()) Logger.error("GLFW failed to initialize.", 1);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
         Logger.out("GLFW Version " + GLFW_VERSION_MAJOR + "." + GLFW_VERSION_MINOR + "." + GLFW_VERSION_REVISION);
 
