@@ -11,7 +11,6 @@ import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
-import com.industra.utils.Logger;
 import lombok.Getter;
 import org.joml.Vector2f;
 
@@ -20,7 +19,7 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
 
     private float speed = 1f;
     private boolean running = false;
-    private float runningMultiplicator = 2;
+    private float runningMultiplicator = 5;
 
     private Model model;
 
@@ -40,16 +39,29 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
     }
 
     @Override
-    public void onKeyboardInput(InputList pressed, InputList held, InputList released, InputList idle) {
-        if(held.has(Key.W))
-            this.position = this.position.add(0, -this.speed);
-        if(held.has(Key.S))
-            this.position = this.position.add(0, this.speed);
-        if(held.has(Key.A))
-            this.position = this.position.add(-this.speed, 0);
-        if(held.has(Key.D))
-            this.position = this.position.add(this.speed, 0);
+    public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
+        if(dpressed.any(Key.W, Key.S, Key.A, Key.D))
+            this.running = true;
+        if(idle.all(Key.W, Key.S, Key.A, Key.D))
+            this.running = false;
 
-        Logger.out("(" + this.position.x + "," + this.position.y + ")");
+        Vector2f movingVector = new Vector2f(0.0f, 0.0f);
+        if(held.has(Key.W))
+            movingVector.y = -this.speed;
+        else if(held.has(Key.S))
+            movingVector.y = this.speed;
+        if(held.has(Key.A))
+            movingVector.x = -this.speed;
+        else if(held.has(Key.D))
+            movingVector.x = this.speed;
+
+        if(held.any(Key.W, Key.S, Key.A, Key.D)) {
+            movingVector.normalize(movingVector);
+
+            if (this.running)
+                movingVector.mul(this.runningMultiplicator, movingVector);
+
+            this.position = this.position.add(movingVector);
+        }
     }
 }
