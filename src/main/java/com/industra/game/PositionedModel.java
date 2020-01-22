@@ -55,7 +55,7 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
         else if(held.has(Key.D))
             movingVector.x = this.speed;
 
-        if(held.any(Key.W, Key.S, Key.A, Key.D)) {
+        if(!movingVector.equals(0, 0)) {
             movingVector.normalize(movingVector);
 
             if (this.running)
