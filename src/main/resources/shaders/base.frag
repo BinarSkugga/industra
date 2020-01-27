@@ -1,9 +1,10 @@
 #version 400 core
 
-in vec3 color;
+in vec2 out_texCoords;
 out vec4 pixel;
 
+uniform sampler2D texture;
 
 void main(void) {
-    pixel = vec4(color, 1.0);
+    pixel = texture(texture, out_texCoords);
 }

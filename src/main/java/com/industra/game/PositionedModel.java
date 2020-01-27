@@ -7,6 +7,7 @@ package com.industra.game;
 import com.industra.engine.Disposable;
 import com.industra.engine.graphic.Drawable;
 import com.industra.engine.graphic.Model;
+import com.industra.engine.graphic.Texture;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
@@ -15,7 +16,7 @@ import lombok.Getter;
 import org.joml.Vector2f;
 
 public class PositionedModel implements InputListener, Drawable, Disposable {
-    @Getter private Vector2f position = new Vector2f(24, 21);
+    @Getter private Vector2f position;
 
     private float speed = 1f;
     private boolean running = false;
@@ -23,9 +24,24 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
 
     private Model model;
 
-    public PositionedModel() {
+    public PositionedModel(String model, String texture, Vector2f position) {
         InputTracker.get().subscribe(this);
-        this.model = Model.load("square");
+        this.model = Model.load(model);
+        if(texture != null)
+            this.model.texture(new Texture(texture));
+        this.position = position;
+    }
+
+    public PositionedModel(String model, Vector2f position) {
+        this(model, null, position);
+    }
+
+    public PositionedModel(String model, String texture) {
+        this(model, texture, new Vector2f(24, 21));
+    }
+
+    public PositionedModel(String model) {
+        this(model, null, new Vector2f(24, 21));
     }
 
     @Override

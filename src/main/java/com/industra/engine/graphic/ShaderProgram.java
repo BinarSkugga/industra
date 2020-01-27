@@ -6,6 +6,7 @@ package com.industra.engine.graphic;
 
 import com.industra.engine.Bindable;
 import com.industra.engine.Disposable;
+import com.industra.engine.Window;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
@@ -16,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 
 public abstract class ShaderProgram<T extends Drawable> implements Disposable, Bindable, Consumer<T> {
     private int id;
@@ -77,6 +81,11 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
 
     @Override
     public void dispose() {
+        for(T entity : this.entities) {
+            if(Disposable.class.isAssignableFrom(entity.getClass()))
+                ((Disposable) entity).dispose();
+        }
+
         this.unbind();
         GL20.glDetachShader(this.id, this.vShader.id());
         GL20.glDetachShader(this.id, this.fShader.id());
@@ -92,7 +101,7 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
 
     public void render() {
         this.bind();
-        this.entities.parallelStream().forEach(entity -> {
+        this.entities.forEach(entity -> {
             this.accept(entity);
             entity.draw();
         });

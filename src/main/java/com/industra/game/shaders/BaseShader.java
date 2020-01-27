@@ -2,8 +2,9 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.game.shaders;
 
+import com.industra.engine.graphic.ShaderProgram;
 import com.industra.game.PositionedModel;
 import org.joml.Matrix4f;
 
@@ -27,6 +28,7 @@ public class BaseShader extends ShaderProgram<PositionedModel> {
     @Override
     protected void registerAttributes() {
         this.attribute("position", 0);
+        this.attribute("texCoords", 1);
     }
 
     @Override

@@ -18,7 +18,9 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Window implements Disposable {
     private static Window instance;
 
-    private Clock clock = new Clock();
+    private Clock renderClock = new Clock();
+    private Clock updateClock = new Clock();
+
     @Getter private long window;
     @Getter private int width, height;
     @Getter private String title;
@@ -30,7 +32,8 @@ public class Window implements Disposable {
         this.width = width;
         this.height = height;
         this.title = title;
-        this.clock.calibrate(60);
+        this.renderClock.calibrate(Constants.FPS_CAP);
+        this.updateClock.calibrate(Constants.FPS_CAP);
     }
 
     public static Window get() {
@@ -53,21 +56,28 @@ public class Window implements Disposable {
         Logger.out("GLFW Version " + GLFW_VERSION_MAJOR + "." + GLFW_VERSION_MINOR + "." + GLFW_VERSION_REVISION);
 
         this.window = glfwCreateWindow(this.width, this.height, this.title, 0, 0);
-
-        glfwMakeContextCurrent(this.window);
         this.context.init();
     }
 
+    public Thread updateLoop() {
+        return new Thread(() -> {
+            while (!glfwWindowShouldClose(this.window)) {
+                this.updateClock.tick();
+                InputTracker.get().update(this.window);
+                this.updateClock.tock();
+            }
+        });
+    }
+
     public void run() {
+        this.updateLoop().start();
         while (!glfwWindowShouldClose(this.window)) {
-            this.clock.tick();
+            this.renderClock.tick();
 
             this.context.run();
-            glfwSwapBuffers(this.window);
             glfwPollEvents();
-            InputTracker.get().update(this.window);
 
-            this.clock.tock();
+            this.renderClock.tock();
         }
     }
 
