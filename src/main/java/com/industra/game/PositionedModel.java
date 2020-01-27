@@ -17,8 +17,10 @@ import org.joml.Vector2f;
 
 public class PositionedModel implements InputListener, Drawable, Disposable {
     @Getter private Vector2f position;
+    @Getter private float rotation = 0;
 
     private float speed = 1f;
+    private float rotationSpeed = 6f;
     private boolean running = false;
     private float runningMultiplicator = 5;
 
@@ -70,6 +72,11 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
             movingVector.x = -this.speed;
         else if(held.has(Key.D))
             movingVector.x = this.speed;
+
+        if(held.has(Key.Q))
+            this.rotation -= rotationSpeed;
+        else if(held.has(Key.E))
+            this.rotation += rotationSpeed;
 
         if(!movingVector.equals(0, 0)) {
             movingVector.normalize(movingVector);
