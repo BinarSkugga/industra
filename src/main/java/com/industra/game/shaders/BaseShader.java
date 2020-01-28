@@ -7,7 +7,6 @@ package com.industra.game.shaders;
 import com.industra.engine.graphic.ShaderProgram;
 import com.industra.game.PositionedModel;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 public class BaseShader extends ShaderProgram<PositionedModel> {
     private Matrix4f ortho;
@@ -20,13 +19,7 @@ public class BaseShader extends ShaderProgram<PositionedModel> {
     @Override
     public void accept(PositionedModel object) {
         this.load("projection", this.ortho);
-
-        Matrix4f transformationMatrix = new Matrix4f().identity();
-        transformationMatrix.translate(object.position().x, object.position().y, 0);
-        transformationMatrix.rotate((float) Math.toRadians(object.rotation()), new Vector3f(0, 0, 1));
-        transformationMatrix.scaleXY(60, 60);
-
-        this.load("transformation", transformationMatrix);
+        this.load("transformation", object.transformation());
     }
 
     @Override

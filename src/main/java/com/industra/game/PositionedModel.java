@@ -8,6 +8,7 @@ import com.industra.engine.Disposable;
 import com.industra.engine.ResourceManager;
 import com.industra.engine.graphic.Drawable;
 import com.industra.engine.graphic.Model;
+import com.industra.engine.graphic.SimplifiedTransformable;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
@@ -15,9 +16,10 @@ import com.industra.engine.input.Key;
 import lombok.Getter;
 import org.joml.Vector2f;
 
-public class PositionedModel implements InputListener, Drawable, Disposable {
+public class PositionedModel implements InputListener, Drawable, Disposable, SimplifiedTransformable {
     @Getter private Vector2f position;
-    @Getter private float rotation = 0;
+    @Getter private float rotationZ = 0;
+    @Getter private float scaleXY = 60;
 
     private float speed = 1f;
     private float rotationSpeed = 6f;
@@ -76,9 +78,9 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
             movingVector.x = this.speed;
 
         if (held.has(Key.Q))
-            this.rotation -= rotationSpeed;
+            this.rotationZ -= rotationSpeed;
         else if (held.has(Key.E))
-            this.rotation += rotationSpeed;
+            this.rotationZ += rotationSpeed;
 
         if (!movingVector.equals(0, 0)) {
             movingVector.normalize(movingVector);
