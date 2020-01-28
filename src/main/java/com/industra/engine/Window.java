@@ -6,7 +6,10 @@ package com.industra.engine;
 
 import com.industra.Constants;
 import com.industra.engine.graphic.GLContext;
+import com.industra.engine.input.InputList;
+import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
+import com.industra.engine.input.Key;
 import com.industra.utils.Clock;
 import com.industra.utils.Logger;
 import lombok.Getter;
@@ -14,11 +17,10 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.Timer;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Window implements Disposable {
+public class Window implements Disposable, InputListener {
     private static Window instance;
     private static Timer timer;
 
@@ -33,6 +35,7 @@ public class Window implements Disposable {
         this.width = width;
         this.height = height;
         this.title = title;
+        InputTracker.get().subscribe(this);
     }
 
     public static Window get() {
@@ -76,5 +79,11 @@ public class Window implements Disposable {
 
         glfwDestroyWindow(this.window);
         glfwTerminate();
+    }
+
+    @Override
+    public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
+        if(released.has(Key.ESCAPE))
+            glfwSetWindowShouldClose(this.window, true);
     }
 }
