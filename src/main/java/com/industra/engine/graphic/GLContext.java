@@ -33,7 +33,6 @@ public class GLContext implements Disposable {
 
     @Override
     public void dispose() {
-        ResourceManager.get().dispose();
         GL.destroy();
     }
 }

@@ -36,8 +36,8 @@ public class Texture implements Bindable, Disposable {
             ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
 
             // This formats the pixels in their position according to the png image format.
-            for(int y = 0; y < height; ++y) {
-                for(int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                for (int x = 0; x < width; ++x) {
                     int pixel = pixels[x + y * width];
                     buffer.put((byte) ((pixel >> 16) & 0xFF));
                     buffer.put((byte) ((pixel >> 8) & 0xFF));

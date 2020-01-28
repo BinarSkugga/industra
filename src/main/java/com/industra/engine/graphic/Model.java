@@ -18,10 +18,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Model implements Disposable, Drawable {
+    @Getter @Setter Texture texture;
     @Getter private VertexArray va;
     @Getter private int indicesCount;
-
-    @Getter @Setter Texture texture;
 
     public Model(@NonNull float[] vertices, @NonNull int[] indices, float[] texCoords) {
         this.va = new VertexArray();
@@ -30,7 +29,7 @@ public class Model implements Disposable, Drawable {
         this.va.bind();
         this.va.addIndices(new IntVertexBuffer(indices));
         this.va.addFloat(new FloatVertexBuffer(vertices));
-        if(texCoords != null)
+        if (texCoords != null)
             this.va.addFloat(new FloatVertexBuffer(texCoords));
         this.va.unbind();
     }
@@ -82,7 +81,7 @@ public class Model implements Disposable, Drawable {
                 }
             }
 
-            if(texCoords.length == vertices.length)
+            if (texCoords.length == vertices.length)
                 return new Model(vertices, indices, texCoords);
             return new Model(vertices, indices);
         } catch (Exception e) {
@@ -96,7 +95,7 @@ public class Model implements Disposable, Drawable {
     public void draw() {
         this.va.bind();
         for (int i = 0; i < this.va.buffers().size(); i++) GL20.glEnableVertexAttribArray(i);
-        if(this.texture != null) {
+        if (this.texture != null) {
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             this.texture.bind();
         }
@@ -108,7 +107,7 @@ public class Model implements Disposable, Drawable {
 
     @Override
     public void dispose() {
-        if(this.texture != null)
+        if (this.texture != null)
             this.texture.dispose();
         this.va.dispose();
     }

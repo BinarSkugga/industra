@@ -8,7 +8,6 @@ import com.industra.engine.Disposable;
 import com.industra.engine.ResourceManager;
 import com.industra.engine.graphic.Drawable;
 import com.industra.engine.graphic.Model;
-import com.industra.engine.graphic.Texture;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
@@ -30,7 +29,7 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
     public PositionedModel(String model, String texture, Vector2f position) {
         InputTracker.get().subscribe(this);
         this.model = Model.load(model);
-        if(texture != null)
+        if (texture != null)
             this.model.texture(ResourceManager.get().getTexture(texture));
         else
             this.model.texture(ResourceManager.get().getTexture("default"));
@@ -61,27 +60,27 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
 
     @Override
     public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
-        if(dpressed.any(Key.W, Key.S, Key.A, Key.D))
+        if (dpressed.any(Key.W, Key.S, Key.A, Key.D))
             this.running = true;
-        if(idle.all(Key.W, Key.S, Key.A, Key.D))
+        if (idle.all(Key.W, Key.S, Key.A, Key.D))
             this.running = false;
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
-        if(held.has(Key.W))
+        if (held.has(Key.W))
             movingVector.y = -this.speed;
-        else if(held.has(Key.S))
+        else if (held.has(Key.S))
             movingVector.y = this.speed;
-        if(held.has(Key.A))
+        if (held.has(Key.A))
             movingVector.x = -this.speed;
-        else if(held.has(Key.D))
+        else if (held.has(Key.D))
             movingVector.x = this.speed;
 
-        if(held.has(Key.Q))
+        if (held.has(Key.Q))
             this.rotation -= rotationSpeed;
-        else if(held.has(Key.E))
+        else if (held.has(Key.E))
             this.rotation += rotationSpeed;
 
-        if(!movingVector.equals(0, 0)) {
+        if (!movingVector.equals(0, 0)) {
             movingVector.normalize(movingVector);
 
             if (this.running)

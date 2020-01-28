@@ -20,7 +20,7 @@ public class ResourceManager implements Disposable {
     }
 
     public static ResourceManager get() {
-        if(instance == null)
+        if (instance == null)
             instance = new ResourceManager();
         return instance;
     }
@@ -47,7 +47,7 @@ public class ResourceManager implements Disposable {
 
     @Override
     public void dispose() {
-        for(Disposable element : this.resources)
+        for (Disposable element : this.resources)
             element.dispose();
     }
 }

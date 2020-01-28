@@ -29,15 +29,15 @@ public abstract class Shader {
         StringBuilder source = new StringBuilder();
         try {
             String extension;
-            if(this.type == GL20.GL_FRAGMENT_SHADER) extension = "frag";
-            else if(this.type == GL32.GL_GEOMETRY_SHADER) extension = "geo";
+            if (this.type == GL20.GL_FRAGMENT_SHADER) extension = "frag";
+            else if (this.type == GL32.GL_GEOMETRY_SHADER) extension = "geo";
             else extension = "vert";
 
             InputStream shaderStream = Shader.class.getClassLoader()
                     .getResourceAsStream("shaders/" + this.name + "." + extension);
             Scanner scanner = new Scanner(shaderStream);
 
-            while(scanner.hasNext()) {
+            while (scanner.hasNext()) {
                 source.append(scanner.nextLine()).append('\n');
             }
             scanner.close();
@@ -46,7 +46,7 @@ public abstract class Shader {
             GL20.glShaderSource(this.id, source);
             GL20.glCompileShader(this.id);
 
-            if(GL20.glGetShaderi(this.id, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            if (GL20.glGetShaderi(this.id, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
                 Logger.error(GL20.glGetShaderInfoLog(this.id, 500));
             }
         } catch (Exception e) {

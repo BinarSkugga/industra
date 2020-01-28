@@ -7,9 +7,9 @@ package com.industra.game;
 import com.industra.engine.Disposable;
 import com.industra.engine.ResourceManager;
 import com.industra.engine.Window;
+import com.industra.engine.graphic.GLContext;
 import com.industra.engine.graphic.Texture;
 import com.industra.game.shaders.BaseShader;
-import com.industra.engine.graphic.GLContext;
 
 public class Game implements Disposable {
     public void run() {
@@ -33,13 +33,14 @@ public class Game implements Disposable {
 
         // Shaders & Models
         BaseShader baseShader = new BaseShader();
-        baseShader.addEntity(new PositionedModel("square"));
+        baseShader.addEntity(new PositionedModel("square", "sprite"));
 
         rm.register(baseShader);
     }
 
     @Override
     public void dispose() {
+        ResourceManager.get().dispose();
         Window.get().dispose();
     }
 }

@@ -37,7 +37,7 @@ public class Window implements Disposable {
     }
 
     public static Window get() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Window(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, Constants.GAME_TITLE);
         }
         return instance;
