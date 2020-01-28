@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Model implements Disposable, Drawable {
-    @Getter @Setter Texture texture;
+    @Getter @Setter Texturable texture;
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
@@ -100,7 +100,6 @@ public class Model implements Disposable, Drawable {
             this.texture.bind();
         }
         GL11.glDrawElements(GL11.GL_TRIANGLES, this.indicesCount, GL11.GL_UNSIGNED_INT, 0);
-        this.texture.unbind();
         for (int i = 0; i < this.va.buffers().size(); i++) GL20.glDisableVertexAttribArray(i);
         this.va.unbind();
     }

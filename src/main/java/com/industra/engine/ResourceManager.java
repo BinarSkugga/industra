@@ -4,7 +4,9 @@
 
 package com.industra.engine;
 
+import com.industra.engine.graphic.SubTexture;
 import com.industra.engine.graphic.Texture;
+import com.industra.engine.graphic.TextureAtlas;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,10 +41,27 @@ public class ResourceManager implements Disposable {
                 .map(clazz::cast).collect(Collectors.toList());
     }
 
-    public <T extends Disposable> Texture getTexture(String name) {
+    public Texture getTexture(String name) {
         return this.resources.parallelStream()
                 .filter(e -> Texture.class.isAssignableFrom(e.getClass()) && ((Texture) e).name().equals(name))
                 .map(Texture.class::cast).findFirst().get();
+    }
+
+    public TextureAtlas getTextureAtlas(String name) {
+        return this.resources.parallelStream()
+                .filter(e -> TextureAtlas.class.isAssignableFrom(e.getClass()) && ((TextureAtlas) e).name().equals(name))
+                .map(TextureAtlas.class::cast).findFirst().get();
+    }
+
+    public SubTexture getSubTexture(String atlas, String name) {
+        return this.resources.parallelStream()
+                .filter(e -> TextureAtlas.class.isAssignableFrom(e.getClass()) && ((TextureAtlas) e).name().equals(atlas))
+                .map(TextureAtlas.class::cast).findFirst().get().getSubTexture(name);
+    }
+
+    public SubTexture getSubTexture(String qualifiedName) {
+        String[] broken = qualifiedName.split("/");
+        return this.getSubTexture(broken[0], broken[1]);
     }
 
     @Override

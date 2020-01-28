@@ -26,12 +26,11 @@ public class Game implements Disposable {
         ResourceManager rm = ResourceManager.get();
 
         // Textures
-        TextureAtlas mainAtlas = new TextureAtlas("main");
-        rm.register(mainAtlas.texturesArray());
+        rm.register(new TextureAtlas("main"));
 
         // Shaders & Models
         BaseShader baseShader = new BaseShader();
-        baseShader.addEntity(new PositionedModel("square", "default"));
+        baseShader.addEntity(new PositionedModel("square", rm.getSubTexture("main/default")));
 
         rm.register(baseShader);
     }

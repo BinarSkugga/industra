@@ -4,60 +4,67 @@
 
 package com.industra.engine.graphic;
 
+import com.industra.engine.Bindable;
+import com.industra.engine.Disposable;
 import lombok.Getter;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
-public class TextureAtlas {
+public class TextureAtlas implements Disposable, Bindable {
+    @Getter private Texture texture;
     @Getter private String name;
-    @Getter private List<Texture> textures;
+    private Map<String, SubTexture> subTextures;
 
     public TextureAtlas(String name, TextureInterpolation interpolation) {
-        try {
-            this.textures = new ArrayList<>();
-            this.name = name;
-            InputStream textureStream = Texture.class.getClassLoader().getResourceAsStream("textures/" + name + ".png");
-            BufferedImage data = ImageIO.read(textureStream);
+        this.name = name;
+        this.texture = new Texture(name, interpolation);
+        this.subTextures = new HashMap<>();
 
-            InputStream atlasStream = Model.class.getClassLoader().getResourceAsStream("textures/" + name + ".atlas");
-            Scanner scanner = new Scanner(atlasStream);
-            while (scanner.hasNext()) {
-                String line = scanner.next();
-                String[] broken = line.split(":");
-                String subName = broken[0];
+        InputStream atlasStream = Model.class.getClassLoader().getResourceAsStream("textures/" + name + ".atlas");
+        Scanner scanner = new Scanner(atlasStream);
+        while (scanner.hasNext()) {
+            String line = scanner.next();
+            String[] broken = line.split(":");
+            String subName = broken[0];
 
-                broken = broken[1].split("/");
-                String[] brokenPosition = broken[0].split(",");
-                Vector2i position = new Vector2i(Integer.parseInt(brokenPosition[0]), Integer.parseInt(brokenPosition[1]));
-                int size = Integer.parseInt(broken[1]);
+            broken = broken[1].split("/");
+            String[] brokenPosition = broken[0].split(",");
+            Vector2f position = new Vector2f(
+                    Float.parseFloat(brokenPosition[0]) / this.texture.size().x,
+                    Float.parseFloat(brokenPosition[1]) / this.texture.size().y
+            );
+            float size = Float.parseFloat(broken[1]) / this.texture.size().x;
 
-                BufferedImage subTextureData = data.getSubimage(position.x, position.y, size, size);
-                this.textures.add(new Texture(subName, subTextureData, interpolation));
-            }
-            scanner.close();
-        } catch(IOException e) {
-            e.printStackTrace();
+            this.subTextures.put(subName, new SubTexture(this, position, size));
         }
+        scanner.close();
     }
 
     public TextureAtlas(String name) {
         this(name, TextureInterpolation.NEAREST);
     }
 
-    public Texture getByName(String name) {
-        return this.textures.parallelStream().filter(t -> t.name().equals(name)).findFirst().get();
+    public SubTexture getSubTexture(String name) {
+        return this.subTextures.get(name);
     }
 
-    public Texture[] texturesArray() {
-        Texture[] array = new Texture[this.textures.size()];
-        this.textures.toArray(array);
-        return array;
+    @Override
+    public void bind() {
+        this.texture.bind();
+    }
+
+    @Override
+    public void unbind() {
+        this.texture.unbind();
+    }
+
+    @Override
+    public void dispose() {
+        this.texture.dispose();
     }
 }

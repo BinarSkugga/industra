@@ -6,5 +6,5 @@ out vec4 pixel;
 uniform sampler2D texture;
 
 void main(void) {
-    pixel = texture(texture, out_texCoords);
+    pixel = texture2D(texture, out_texCoords);
 }
