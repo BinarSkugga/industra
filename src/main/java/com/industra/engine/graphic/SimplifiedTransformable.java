@@ -10,7 +10,11 @@ import org.joml.Vector3f;
 
 public interface SimplifiedTransformable extends Transformable {
     Vector2f position();
+
+    // Scaling of the model for both the x and y axis
     float scaleXY();
+
+    // Rotation of the model in degrees on the Z axis
     float rotationZ();
 
     @Override

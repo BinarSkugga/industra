@@ -13,13 +13,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.Timer;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Window implements Disposable {
     private static Window instance;
-
-    private Clock renderClock = new Clock();
-    private Clock updateClock = new Clock();
+    private static Timer timer;
 
     @Getter private long window;
     @Getter private int width, height;
@@ -32,8 +33,6 @@ public class Window implements Disposable {
         this.width = width;
         this.height = height;
         this.title = title;
-        this.renderClock.calibrate(Constants.FPS_CAP);
-        this.updateClock.calibrate(Constants.FPS_CAP);
     }
 
     public static Window get() {
@@ -59,25 +58,15 @@ public class Window implements Disposable {
         this.context.init();
     }
 
-    public Thread updateLoop() {
-        return new Thread(() -> {
-            while (!glfwWindowShouldClose(this.window)) {
-                this.updateClock.tick();
-                InputTracker.get().update(this.window);
-                this.updateClock.tock();
-            }
-        });
-    }
-
     public void run() {
-        this.updateLoop().start();
-        while (!glfwWindowShouldClose(this.window)) {
-            this.renderClock.tick();
+        Clock clock = new Clock();
 
+        while (!glfwWindowShouldClose(this.window)) {
             this.context.run();
             glfwPollEvents();
+            InputTracker.get().update(this.window);
 
-            this.renderClock.tock();
+            clock.sync(60);
         }
     }
 

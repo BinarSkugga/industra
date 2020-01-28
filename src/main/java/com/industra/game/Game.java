@@ -10,6 +10,7 @@ import com.industra.engine.Window;
 import com.industra.engine.graphic.GLContext;
 import com.industra.engine.graphic.TextureAtlas;
 import com.industra.game.shaders.BaseShader;
+import org.joml.Vector2f;
 
 public class Game implements Disposable {
     public void run() {

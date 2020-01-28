@@ -8,7 +8,6 @@ import com.industra.engine.Bindable;
 import com.industra.engine.Disposable;
 import lombok.Getter;
 import org.joml.Vector2f;
-import org.joml.Vector2i;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -51,6 +50,12 @@ public class TextureAtlas implements Disposable, Bindable {
 
     public SubTexture getSubTexture(String name) {
         return this.subTextures.get(name);
+    }
+
+    public SubTexture getSubTexture(Vector2f position, float size) {
+        position.x /= this.texture.size().x;
+        position.y /= this.texture.size().y;
+        return new SubTexture(this, position, size / this.texture.size().x);
     }
 
     @Override

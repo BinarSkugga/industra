@@ -40,7 +40,7 @@ public class SubTexture implements Texturable, SimplifiedTransformable {
     }
 
     @Override
-    public Matrix4f texTransformation() {
+    public Matrix4f texCoordTransformation() {
         return this.transformation();
     }
 }
