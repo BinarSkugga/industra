@@ -4,6 +4,7 @@
 
 package com.industra.game.shaders;
 
+import com.industra.Constants;
 import com.industra.engine.graphic.ShaderProgram;
 import com.industra.game.PositionedModel;
 import org.joml.Matrix4f;
@@ -13,7 +14,7 @@ public class BaseShader extends ShaderProgram<PositionedModel> {
 
     public BaseShader() {
         super("base");
-        this.ortho = new Matrix4f().setOrtho2D(0, 1280, 720, 0);
+        this.ortho = new Matrix4f().setOrtho2D(0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, 0);
     }
 
     @Override
