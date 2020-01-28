@@ -20,10 +20,12 @@ import java.nio.ByteBuffer;
 
 public class Texture implements Bindable, Disposable {
     @Getter private int id;
+    @Getter private String name;
     private BufferedImage data;
 
-    public Texture(@NonNull String name) {
+    public Texture(@NonNull String name, TextureInterpolation interpolation) {
         try {
+            this.name = name;
             InputStream textureStream = Texture.class.getClassLoader().getResourceAsStream("textures/" + name + ".png");
             this.data = ImageIO.read(textureStream);
 
@@ -51,14 +53,18 @@ public class Texture implements Bindable, Disposable {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, interpolation.value());
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, interpolation.value());
 
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
             this.unbind();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Texture(@NonNull String name) {
+        this(name, TextureInterpolation.NEAREST);
     }
 
     @Override

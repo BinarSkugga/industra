@@ -4,6 +4,8 @@
 
 package com.industra.engine;
 
+import com.industra.engine.graphic.Texture;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +37,12 @@ public class ResourceManager implements Disposable {
         return this.resources.parallelStream()
                 .filter(e -> clazz.isAssignableFrom(e.getClass()))
                 .map(clazz::cast).collect(Collectors.toList());
+    }
+
+    public <T extends Disposable> Texture getTexture(String name) {
+        return this.resources.parallelStream()
+                .filter(e -> Texture.class.isAssignableFrom(e.getClass()) && ((Texture) e).name().equals(name))
+                .map(Texture.class::cast).findFirst().get();
     }
 
     @Override

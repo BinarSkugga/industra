@@ -5,6 +5,7 @@
 package com.industra.game;
 
 import com.industra.engine.Disposable;
+import com.industra.engine.ResourceManager;
 import com.industra.engine.graphic.Drawable;
 import com.industra.engine.graphic.Model;
 import com.industra.engine.graphic.Texture;
@@ -30,7 +31,9 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
         InputTracker.get().subscribe(this);
         this.model = Model.load(model);
         if(texture != null)
-            this.model.texture(new Texture(texture));
+            this.model.texture(ResourceManager.get().getTexture(texture));
+        else
+            this.model.texture(ResourceManager.get().getTexture("default"));
         this.position = position;
     }
 
@@ -39,11 +42,11 @@ public class PositionedModel implements InputListener, Drawable, Disposable {
     }
 
     public PositionedModel(String model, String texture) {
-        this(model, texture, new Vector2f(24, 21));
+        this(model, texture, new Vector2f(0, 0));
     }
 
     public PositionedModel(String model) {
-        this(model, null, new Vector2f(24, 21));
+        this(model, null, new Vector2f(0, 0));
     }
 
     @Override
