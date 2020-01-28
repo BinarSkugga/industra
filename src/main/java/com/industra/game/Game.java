@@ -10,7 +10,6 @@ import com.industra.engine.Window;
 import com.industra.engine.graphic.GLContext;
 import com.industra.engine.graphic.TextureAtlas;
 import com.industra.game.shaders.BaseShader;
-import org.joml.Vector2f;
 
 public class Game implements Disposable {
     public void run() {
@@ -31,7 +30,7 @@ public class Game implements Disposable {
 
         // Shaders & Models
         BaseShader baseShader = new BaseShader();
-        baseShader.addEntity(new PositionedModel("square", rm.getSubTexture("main/default")));
+        baseShader.addEntity(new PositionedModel("square", rm.getSubTexture("main/animatedDefault")));
 
         rm.register(baseShader);
     }
