@@ -7,6 +7,7 @@ package com.industra.engine.graphic;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import lombok.Getter;
 import lombok.NonNull;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -22,7 +23,8 @@ public class Texture implements Texturable {
 
     @Getter private int id;
     @Getter private String name;
-    @Getter private Vector2i size;
+    @Getter private Vector2i imageSize;
+    @Getter private Vector2f size;
 
     public Texture(@NonNull String name, @NonNull TextureInterpolation interpolation) {
         try {
@@ -30,10 +32,10 @@ public class Texture implements Texturable {
 
             InputStream textureStream = Texture.class.getClassLoader().getResourceAsStream("textures/" + name + ".png");
             PNGDecoder decoder = new PNGDecoder(textureStream);
-            this.size = new Vector2i(decoder.getWidth(), decoder.getHeight());
+            this.imageSize = new Vector2i(decoder.getWidth(), decoder.getHeight());
 
-            ByteBuffer buffer = BufferUtils.createByteBuffer(this.size.x * this.size.y * COLOR_SIZE);
-            decoder.decode(buffer, this.size.x * COLOR_SIZE, PNGDecoder.Format.RGBA);
+            ByteBuffer buffer = BufferUtils.createByteBuffer(this.imageSize.x * this.imageSize.y * COLOR_SIZE);
+            decoder.decode(buffer, this.imageSize.x * COLOR_SIZE, PNGDecoder.Format.RGBA);
             buffer.flip();
 
             this.id = GL11.glGenTextures();
@@ -45,7 +47,7 @@ public class Texture implements Texturable {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, interpolation.value());
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, interpolation.value());
 
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, this.size.x, this.size.y, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, this.imageSize.x, this.imageSize.y, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
             this.unbind();
         } catch (IOException e) {
             e.printStackTrace();

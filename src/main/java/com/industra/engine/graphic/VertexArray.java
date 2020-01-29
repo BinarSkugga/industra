@@ -17,6 +17,8 @@ import java.util.List;
 
 
 public class VertexArray implements Disposable, Bindable {
+    private static int LAST_BIND = 0;
+
     private int id;
     @Getter private VertexBuffer indices;
     @Getter private List<VertexBuffer> buffers = new ArrayList<>();
@@ -61,12 +63,16 @@ public class VertexArray implements Disposable, Bindable {
 
     @Override
     public void bind() {
-        GL30.glBindVertexArray(this.id);
+        if(LAST_BIND != this.id) {
+            LAST_BIND = this.id;
+            GL30.glBindVertexArray(this.id);
+        }
     }
 
     @Override
     public void unbind() {
         GL30.glBindVertexArray(0);
+        LAST_BIND = 0;
         this.indices.unbind();
     }
 

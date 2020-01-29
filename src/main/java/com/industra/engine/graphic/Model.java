@@ -101,7 +101,6 @@ public class Model implements Disposable, Drawable {
         }
         GL11.glDrawElements(GL11.GL_TRIANGLES, this.indicesCount, GL11.GL_UNSIGNED_INT, 0);
         for (int i = 0; i < this.va.buffers().size(); i++) GL20.glDisableVertexAttribArray(i);
-        this.va.unbind();
     }
 
     @Override

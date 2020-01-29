@@ -7,6 +7,9 @@ package com.industra.engine.input;
 import lombok.Synchronized;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -24,6 +27,8 @@ public class InputTracker {
     public static final long INPUT_DOUBLE_TIMEOUT = TimeUnit.MILLISECONDS.toNanos(400);
 
     private static InputTracker tracker;
+
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Map<Integer, Integer> trackedStates = new HashMap<>();
     private Map<Integer, Long> trackedDPressed = new HashMap<>();
     private List<InputListener> listeners = new ArrayList<>();
@@ -55,7 +60,7 @@ public class InputTracker {
     }
 
     public void update(long window) {
-        new Thread(() -> {
+        this.executor.submit(() -> {
             for (Map.Entry<Integer, Integer> state : this.trackedStates.entrySet()) {
                 int previousState = state.getValue();
                 int glfwState = glfwGetKey(window, state.getKey());
@@ -106,6 +111,6 @@ public class InputTracker {
             this.listeners.forEach(listener -> {
                 listener.onKeyboardInput(pressed, dpressed, held, released, idle);
             });
-        }).start();
+        });
     }
 }

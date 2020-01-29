@@ -34,21 +34,22 @@ public class TextureAtlas implements Disposable, Bindable {
             broken = broken[1].split("/");
             String[] brokenPosition = broken[0].split(",");
             Vector2f position = new Vector2f(
-                    Float.parseFloat(brokenPosition[0]) / this.texture.size().x,
-                    Float.parseFloat(brokenPosition[1]) / this.texture.size().y
+                    Float.parseFloat(brokenPosition[0]) / this.texture.imageSize().x,
+                    Float.parseFloat(brokenPosition[1]) / this.texture.imageSize().y
             );
 
             if(broken[1].contains("x")) {
                 String[] brokenSize = broken[1].split("x");
                 Vector2f size = new Vector2f(
-                        Float.parseFloat(brokenSize[0]) / this.texture.size().x,
-                        Float.parseFloat(brokenSize[1]) / this.texture.size().x);
+                        Float.parseFloat(brokenSize[0]) / this.texture.imageSize().x,
+                        Float.parseFloat(brokenSize[1]) / this.texture.imageSize().x);
 
                 SubTexture sub = new SubTexture(this, position, size);
-                sub.animate(200);
+                if(broken.length > 2 && broken[2].equals("animated"))
+                    sub.animated(true);
                 this.subTextures.put(subName, sub);
             } else {
-                float size = Float.parseFloat(broken[1]) / this.texture.size().x;
+                float size = Float.parseFloat(broken[1]) / this.texture.imageSize().x;
                 this.subTextures.put(subName, new SubTexture(this, position, size));
             }
         }

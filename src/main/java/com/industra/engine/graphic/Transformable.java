@@ -15,6 +15,7 @@ public interface Transformable {
 
     default Matrix4f transformation() {
         Matrix4f transformationMatrix = new Matrix4f().identity();
+
         transformationMatrix.translate(this.position().x, this.position().y, 0);
         transformationMatrix.rotate((float) Math.toRadians(this.rotation().x), new Vector3f(1, 0, 0));
         transformationMatrix.rotate((float) Math.toRadians(this.rotation().y), new Vector3f(0, 1, 0));

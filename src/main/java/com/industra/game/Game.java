@@ -39,5 +39,7 @@ public class Game implements Disposable {
     public void dispose() {
         ResourceManager.get().dispose();
         Window.get().dispose();
+
+        System.exit(0);
     }
 }

@@ -14,6 +14,7 @@ import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
+import com.industra.utils.Clock;
 import lombok.Getter;
 import org.joml.Vector2f;
 
@@ -22,10 +23,13 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
     @Getter private float rotationZ = 0;
     @Getter private float scaleXY = 60;
 
-    private float speed = 1f;
-    private float rotationSpeed = 6f;
+    // Pixel per second
+    private float speed = 200f;
+    // Complete rotation per second
+    private float rotationSpeed = 1.5f;
+
     private boolean running = false;
-    private float runningMultiplicator = 5;
+    private float runningMultiplicator = 3;
 
     @Getter private Model model;
 
@@ -55,21 +59,22 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
         if (held.has(Key.W))
-            movingVector.y = -this.speed;
+            movingVector.y = -1;
         else if (held.has(Key.S))
-            movingVector.y = this.speed;
+            movingVector.y = 1;
         if (held.has(Key.A))
-            movingVector.x = -this.speed;
+            movingVector.x = -1;
         else if (held.has(Key.D))
-            movingVector.x = this.speed;
+            movingVector.x = 1;
 
         if (held.has(Key.Q))
-            this.rotationZ -= rotationSpeed;
+            this.rotationZ -= Clock.relativize(this.rotationSpeed * 360f);
         else if (held.has(Key.E))
-            this.rotationZ += rotationSpeed;
+            this.rotationZ += Clock.relativize(this.rotationSpeed * 360f);
 
-        if (!movingVector.equals(0, 0)) {
+        if (!movingVector.equals(0, 0) && Clock.fps() > 0) {
             movingVector.normalize(movingVector);
+            movingVector.mul(Clock.relativize(this.speed), movingVector);
 
             if (this.running)
                 movingVector.mul(this.runningMultiplicator, movingVector);

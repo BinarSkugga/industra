@@ -12,45 +12,55 @@ import java.util.concurrent.TimeUnit;
 public class Clock {
     private static long MS_IN_SEC = TimeUnit.SECONDS.toMillis(1);
 
-    private long time = 0;
-    @Getter private int initialFPS = 0;
-    private long frameTime = 0;
-    @Getter private int fps = 0;
-    private int fpsCount = 0;
-    private long nsCount = 0;
+    private static long time = 0;
+    @Getter static private int initialFPS = 0;
+    private static long frameTime = 0;
+    @Getter static float deltaTime = 0;
+    @Getter static private int fps = 0;
+    @Getter static private long ms = 0;
+    private static int fpsCount = 0;
+    private static long msCount = 0;
 
-    public long monotonic() {
+    public static long monotonic() {
         return System.nanoTime() / 1000000;
     }
 
-    public long delta() {
-        return this.monotonic() - this.time;
+    public static long delta() {
+        return monotonic() - time;
     }
 
-    public void sync(int fps) {
-        if(this.time > 0 && this.frameTime > 0) {
+    public static float relativize(float speed) {
+        return speed * Clock.deltaTime;
+    }
+
+    public static void sync(int fps) {
+        if(Clock.time > 0 && Clock.frameTime > 0) {
             try {
-                long waitingTime = this.frameTime - this.delta();
+                long waitingTime = Clock.frameTime - delta();
                 if (waitingTime < 0) waitingTime = 0;
                 TimeUnit.MILLISECONDS.sleep(waitingTime);
             } catch (InterruptedException e) {
                 Logger.error("Clock skipped a frame.");
             }
 
-            if (this.nsCount >= MS_IN_SEC) {
-                Logger.out(this.fpsCount);
-                this.fps = this.fpsCount;
-                this.fpsCount = 0;
-                this.nsCount = this.nsCount - MS_IN_SEC;
+            if (Clock.msCount >= MS_IN_SEC) {
+                Clock.fps = Clock.fpsCount;
+                Clock.ms = Clock.msCount;
+
+                Clock.fpsCount = 0;
+                Clock.msCount = Clock.msCount - Clock.MS_IN_SEC;
+
+                Clock.deltaTime = delta() / 1000f;
+                Logger.out("FPS: " + Clock.fps);
             }
 
-            this.fpsCount += 1;
-            this.nsCount += this.delta();
-            this.time = this.monotonic();
+            Clock.fpsCount += 1;
+            Clock.msCount += delta();
+            Clock.time = monotonic();
         } else {
-            this.initialFPS = fps;
-            if (fps > 0) this.frameTime = MS_IN_SEC / fps;
-            this.time = this.monotonic();
+            Clock.initialFPS = fps;
+            if (fps > 0) Clock.frameTime = Clock.MS_IN_SEC / fps;
+            Clock.time = monotonic();
         }
     }
 

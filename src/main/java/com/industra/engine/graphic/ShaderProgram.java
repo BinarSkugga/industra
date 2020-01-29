@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class ShaderProgram<T extends Drawable> implements Disposable, Bindable, Consumer<T> {
+    private static int LAST_BIND = 0;
+
     private int id;
     private VertexShader vShader;
     private FragmentShader fShader;
@@ -68,12 +70,16 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
 
     @Override
     public void bind() {
-        GL20.glUseProgram(this.id);
+        if(this.id != LAST_BIND) {
+            LAST_BIND = this.id;
+            GL20.glUseProgram(this.id);
+        }
     }
 
     @Override
     public void unbind() {
         GL20.glUseProgram(0);
+        LAST_BIND = 0;
     }
 
     @Override
@@ -102,7 +108,6 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
             this.accept(entity);
             entity.draw();
         });
-        this.unbind();
     }
 
     @Override
