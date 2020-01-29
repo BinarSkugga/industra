@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.texture;
 
 import lombok.Getter;
 import org.lwjgl.opengl.GL11;

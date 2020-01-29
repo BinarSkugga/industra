@@ -2,8 +2,11 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.texture;
 
+import com.industra.engine.graphic.Animatable;
+import com.industra.engine.graphic.Texturable;
+import com.industra.engine.graphic.Transformable;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;

@@ -4,9 +4,9 @@
 
 package com.industra.engine;
 
-import com.industra.engine.graphic.SubTexture;
-import com.industra.engine.graphic.Texture;
-import com.industra.engine.graphic.TextureAtlas;
+import com.industra.engine.graphic.texture.SubTexture;
+import com.industra.engine.graphic.texture.Texture;
+import com.industra.engine.graphic.texture.TextureAtlas;
 
 import java.util.ArrayList;
 import java.util.Arrays;

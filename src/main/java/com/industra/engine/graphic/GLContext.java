@@ -7,6 +7,7 @@ package com.industra.engine.graphic;
 import com.industra.engine.Disposable;
 import com.industra.engine.ResourceManager;
 import com.industra.engine.Window;
+import com.industra.engine.graphic.shader.ShaderProgram;
 import com.industra.utils.Logger;
 import org.lwjgl.opengl.GL;
 

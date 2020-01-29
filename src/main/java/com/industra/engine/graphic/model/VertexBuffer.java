@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.model;
 
 import com.industra.engine.Bindable;
 import com.industra.engine.Disposable;

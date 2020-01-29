@@ -8,7 +8,7 @@ import com.industra.engine.Disposable;
 import com.industra.engine.ResourceManager;
 import com.industra.engine.Window;
 import com.industra.engine.graphic.GLContext;
-import com.industra.engine.graphic.TextureAtlas;
+import com.industra.engine.graphic.texture.TextureAtlas;
 import com.industra.game.shaders.BaseShader;
 
 public class Game implements Disposable {

@@ -2,10 +2,11 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.shader;
 
 import com.industra.engine.Bindable;
 import com.industra.engine.Disposable;
+import com.industra.engine.graphic.Drawable;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;

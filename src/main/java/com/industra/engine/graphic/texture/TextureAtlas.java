@@ -2,10 +2,11 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.texture;
 
 import com.industra.engine.Bindable;
 import com.industra.engine.Disposable;
+import com.industra.engine.graphic.model.Model;
 import lombok.Getter;
 import org.joml.Vector2f;
 

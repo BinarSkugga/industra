@@ -5,7 +5,7 @@
 package com.industra.game.shaders;
 
 import com.industra.Constants;
-import com.industra.engine.graphic.ShaderProgram;
+import com.industra.engine.graphic.shader.ShaderProgram;
 import com.industra.game.PositionedModel;
 import org.joml.Matrix4f;
 

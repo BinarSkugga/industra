@@ -2,9 +2,11 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.model;
 
 import com.industra.engine.Disposable;
+import com.industra.engine.graphic.Drawable;
+import com.industra.engine.graphic.Texturable;
 import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Model implements Disposable, Drawable {
-    @Getter @Setter Texturable texture;
+    @Getter @Setter
+    Texturable texture;
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
