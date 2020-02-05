@@ -17,8 +17,8 @@ public class InputList extends ArrayList<Integer> {
     }
 
     public boolean any(Integer... keys) {
-        for(Integer e : keys) {
-            if(this.contains(e)) return true;
+        for (Integer e : keys) {
+            if (this.contains(e)) return true;
         }
         return false;
     }

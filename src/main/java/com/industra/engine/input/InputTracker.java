@@ -32,14 +32,22 @@ public class InputTracker {
         List<Integer> tracked = Arrays.stream(Key.class.getDeclaredFields())
                 .map(f -> {
                     try {
-                        return (int)(f.get(null));
+                        return (int) (f.get(null));
                     } catch (Exception e) { /* Swallowing this since it cannot fail on public static fields. */ }
                     return -1;
                 }).collect(Collectors.toList());
-        for(int input : tracked) {
+        for (int input : tracked) {
             this.trackedStates.put(input, 0);
             this.trackedDPressed.put(input, 0L);
         }
+    }
+
+    @Synchronized
+    public static InputTracker get() {
+        if (tracker == null) {
+            tracker = new InputTracker();
+        }
+        return tracker;
     }
 
     public void subscribe(InputListener listener) {
@@ -47,26 +55,26 @@ public class InputTracker {
     }
 
     public void update(long window) {
-        for(Map.Entry<Integer, Integer> state : this.trackedStates.entrySet()) {
+        for (Map.Entry<Integer, Integer> state : this.trackedStates.entrySet()) {
             int previousState = state.getValue();
             int glfwState = glfwGetKey(window, state.getKey());
 
             // GLFW State Changed
-            if(glfwState != previousState) {
+            if (glfwState != previousState) {
                 // Key is IDLE
-                if(glfwState == GLFW_IDLE) {
-                    if(previousState == INPUT_KEY_PRESSED || previousState == INPUT_KEY_HELD || previousState == INPUT_KEY_DPRESSED) {
+                if (glfwState == GLFW_IDLE) {
+                    if (previousState == INPUT_KEY_PRESSED || previousState == INPUT_KEY_HELD || previousState == INPUT_KEY_DPRESSED) {
                         this.trackedStates.put(state.getKey(), INPUT_KEY_RELEASED);
                     }
-                    if(previousState == INPUT_KEY_RELEASED) {
+                    if (previousState == INPUT_KEY_RELEASED) {
                         this.trackedStates.put(state.getKey(), INPUT_KEY_IDLE);
                     }
                 }
                 // Key is PRESSED but not on HELD
-                else if(glfwState == GLFW_PRESS && previousState != INPUT_KEY_HELD) {
-                    if(previousState == INPUT_KEY_DPRESSED) {
+                else if (glfwState == GLFW_PRESS && previousState != INPUT_KEY_HELD) {
+                    if (previousState == INPUT_KEY_DPRESSED) {
                         this.trackedStates.put(state.getKey(), INPUT_KEY_HELD);
-                    } else if(System.nanoTime() - this.trackedDPressed.get(state.getKey()) <= INPUT_DOUBLE_TIMEOUT) {
+                    } else if (System.nanoTime() - this.trackedDPressed.get(state.getKey()) <= INPUT_DOUBLE_TIMEOUT) {
                         this.trackedStates.put(state.getKey(), INPUT_KEY_DPRESSED);
                     } else {
                         this.trackedStates.put(state.getKey(), INPUT_KEY_PRESSED);
@@ -75,7 +83,7 @@ public class InputTracker {
                 }
             }
             // If no change and key was PRESSED or DPRESSED, put HELD state
-            else if(glfwState == GLFW_PRESS) {
+            else if (glfwState == GLFW_PRESS) {
                 this.trackedStates.put(state.getKey(), INPUT_KEY_HELD);
             }
         }
@@ -86,24 +94,16 @@ public class InputTracker {
         InputList released = new InputList();
         InputList idle = new InputList();
 
-        for(Map.Entry<Integer, Integer> keyState : this.trackedStates.entrySet()) {
-            if(keyState.getValue() == INPUT_KEY_IDLE) idle.add(keyState.getKey());
-            else if(keyState.getValue() == INPUT_KEY_PRESSED) pressed.add(keyState.getKey());
-            else if(keyState.getValue() == INPUT_KEY_DPRESSED) dpressed.add(keyState.getKey());
-            else if(keyState.getValue() == INPUT_KEY_HELD) held.add(keyState.getKey());
-            else if(keyState.getValue() == INPUT_KEY_RELEASED) released.add(keyState.getKey());
+        for (Map.Entry<Integer, Integer> keyState : this.trackedStates.entrySet()) {
+            if (keyState.getValue() == INPUT_KEY_IDLE) idle.add(keyState.getKey());
+            else if (keyState.getValue() == INPUT_KEY_PRESSED) pressed.add(keyState.getKey());
+            else if (keyState.getValue() == INPUT_KEY_DPRESSED) dpressed.add(keyState.getKey());
+            else if (keyState.getValue() == INPUT_KEY_HELD) held.add(keyState.getKey());
+            else if (keyState.getValue() == INPUT_KEY_RELEASED) released.add(keyState.getKey());
         }
 
         this.listeners.parallelStream().forEach(listener -> {
             listener.onKeyboardInput(pressed, dpressed, held, released, idle);
         });
-    }
-
-    @Synchronized
-    public static InputTracker get() {
-        if(tracker == null) {
-            tracker = new InputTracker();
-        }
-        return tracker;
     }
 }

@@ -4,30 +4,43 @@
 
 package com.industra.game;
 
-import com.industra.Constants;
 import com.industra.engine.Disposable;
+import com.industra.engine.ResourceManager;
 import com.industra.engine.Window;
 import com.industra.engine.graphic.GLContext;
+import com.industra.engine.graphic.Texture;
+import com.industra.game.shaders.BaseShader;
 
 public class Game implements Disposable {
-    private Window window;
-
     public void run() {
-        this.init();
-        this.window = new Window(1280, 720, Constants.GAME_TITLE);
-        this.window.context(new GLContext(this.window));
-        this.window.init();
+        Window window = Window.get();
+        window.context(new GLContext());
+        window.init();
 
-        this.window.run();
+        this.init();
+        window.run();
         this.dispose();
     }
 
     public void init() {
-        FakePlayer player = new FakePlayer();
+        ResourceManager rm = ResourceManager.get();
+
+        // Textures
+        rm.register(
+                new Texture("default"),
+                new Texture("sprite")
+        );
+
+        // Shaders & Models
+        BaseShader baseShader = new BaseShader();
+        baseShader.addEntity(new PositionedModel("square", "sprite"));
+
+        rm.register(baseShader);
     }
 
     @Override
     public void dispose() {
-        this.window.dispose();
+        ResourceManager.get().dispose();
+        Window.get().dispose();
     }
 }

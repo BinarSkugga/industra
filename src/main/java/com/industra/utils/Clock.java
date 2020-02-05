@@ -50,6 +50,7 @@ public class Clock {
 
         if (this.nsCount >= nsInSec) {
             this.fps = this.fpsCount;
+            Logger.out(this.fps);
             this.fpsCount = 0;
             this.nsCount = this.nsCount - nsInSec;
         }

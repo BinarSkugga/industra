@@ -5,31 +5,37 @@
 package com.industra.engine.graphic;
 
 import com.industra.engine.Disposable;
-import com.industra.engine.input.InputListener;
 import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 
-import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Model implements Disposable, InputListener {
+public class Model implements Disposable, Drawable {
+    @Getter @Setter Texture texture;
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
-    public Model(@NonNull float[] vertices, @NonNull int[] indices) {
+    public Model(@NonNull float[] vertices, @NonNull int[] indices, float[] texCoords) {
         this.va = new VertexArray();
         this.indicesCount = indices.length;
 
         this.va.bind();
         this.va.addIndices(new IntVertexBuffer(indices));
         this.va.addFloat(new FloatVertexBuffer(vertices));
+        if (texCoords != null)
+            this.va.addFloat(new FloatVertexBuffer(texCoords));
         this.va.unbind();
+    }
+
+    public Model(@NonNull float[] vertices, @NonNull int[] indices) {
+        this(vertices, indices, null);
     }
 
     public static Model load(@NonNull String model) {
@@ -60,6 +66,23 @@ public class Model implements Disposable, InputListener {
                     i--;
                 }
             }
+
+            int texCoordsCount = (int) lines.stream().filter(l -> l.startsWith("T")).count();
+            float[] texCoords = new float[texCoordsCount * 2];
+
+            for (int i = 0, j = 0; j < lines.size(); i++, j++) {
+                String[] broken = lines.get(j).split(":");
+                if (broken[0].equals("T")) {
+                    broken = broken[1].trim().split(",");
+                    texCoords[i++] = Float.parseFloat(broken[0]);
+                    texCoords[i] = Float.parseFloat(broken[1]);
+                } else {
+                    i--;
+                }
+            }
+
+            if (texCoords.length == vertices.length)
+                return new Model(vertices, indices, texCoords);
             return new Model(vertices, indices);
         } catch (Exception e) {
             Logger.error(e);
@@ -68,16 +91,24 @@ public class Model implements Disposable, InputListener {
         return null;
     }
 
+    @Override
     public void draw() {
         this.va.bind();
         for (int i = 0; i < this.va.buffers().size(); i++) GL20.glEnableVertexAttribArray(i);
+        if (this.texture != null) {
+            GL13.glActiveTexture(GL13.GL_TEXTURE0);
+            this.texture.bind();
+        }
         GL11.glDrawElements(GL11.GL_TRIANGLES, this.indicesCount, GL11.GL_UNSIGNED_INT, 0);
+        this.texture.unbind();
         for (int i = 0; i < this.va.buffers().size(); i++) GL20.glDisableVertexAttribArray(i);
         this.va.unbind();
     }
 
     @Override
     public void dispose() {
+        if (this.texture != null)
+            this.texture.dispose();
         this.va.dispose();
     }
 }
