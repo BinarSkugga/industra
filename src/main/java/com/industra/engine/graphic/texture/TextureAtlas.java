@@ -33,25 +33,25 @@ public class TextureAtlas implements Disposable, Bindable {
             String subName = broken[0];
 
             broken = broken[1].split("/");
-            String[] brokenPosition = broken[0].split(",");
+            String[] brokenPosition = broken[0].split("x");
             Vector2f position = new Vector2f(
-                    Float.parseFloat(brokenPosition[0]) / this.texture.imageSize().x,
-                    Float.parseFloat(brokenPosition[1]) / this.texture.imageSize().y
+                    Float.parseFloat(brokenPosition[0]),
+                    Float.parseFloat(brokenPosition[1])
             );
 
             if(broken[1].contains("x")) {
                 String[] brokenSize = broken[1].split("x");
                 Vector2f size = new Vector2f(
-                        Float.parseFloat(brokenSize[0]) / this.texture.imageSize().x,
-                        Float.parseFloat(brokenSize[1]) / this.texture.imageSize().x);
+                        Float.parseFloat(brokenSize[0]),
+                        Float.parseFloat(brokenSize[1])
+                );
 
                 SubTexture sub = new SubTexture(this, position, size);
                 if(broken.length > 2 && broken[2].equals("animated"))
                     sub.animated(true);
                 this.subTextures.put(subName, sub);
             } else {
-                float size = Float.parseFloat(broken[1]) / this.texture.imageSize().x;
-                this.subTextures.put(subName, new SubTexture(this, position, size));
+                this.subTextures.put(subName, new SubTexture(this, position, Float.parseFloat(broken[1])));
             }
         }
         scanner.close();
@@ -66,9 +66,7 @@ public class TextureAtlas implements Disposable, Bindable {
     }
 
     public SubTexture getSubTexture(Vector2f position, float size) {
-        position.x /= this.texture.size().x;
-        position.y /= this.texture.size().y;
-        return new SubTexture(this, position, size / this.texture.size().x);
+        return new SubTexture(this, position, size);
     }
 
     @Override

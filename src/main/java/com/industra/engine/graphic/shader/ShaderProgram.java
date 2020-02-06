@@ -58,7 +58,6 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
 
     protected void uniform(String name) {
         int location = GL20.glGetUniformLocation(this.id, name);
-        ;
         this.locations.put(name, location);
     }
 

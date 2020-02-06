@@ -20,7 +20,7 @@ import org.joml.Vector2f;
 public class PositionedModel implements InputListener, Drawable, Disposable, SimplifiedTransformable {
     @Getter private Vector2f position = new Vector2f(0, 0);
     @Getter private float rotationZ = 0;
-    @Getter private float scaleXY = 60;
+    @Getter private float scaleXY = 30;
 
     // Pixel per second
     private float speed = 200f;

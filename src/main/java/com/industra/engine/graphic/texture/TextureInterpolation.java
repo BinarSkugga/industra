@@ -5,11 +5,11 @@
 package com.industra.engine.graphic.texture;
 
 import lombok.Getter;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL31;
 
 public enum TextureInterpolation {
-    NEAREST(GL11.GL_NEAREST),
-    LINEAR(GL11.GL_LINEAR);
+    NEAREST(GL31.GL_NEAREST),
+    LINEAR(GL31.GL_LINEAR);
 
     @Getter private int value;
 

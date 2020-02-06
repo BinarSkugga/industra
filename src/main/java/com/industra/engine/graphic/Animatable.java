@@ -5,6 +5,7 @@
 package com.industra.engine.graphic;
 
 import com.industra.utils.Clock;
+import com.industra.utils.Logger;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
@@ -15,13 +16,13 @@ public interface Animatable extends Transformable {
     Animatable lastFrameTime(long time);
     int frame();
     Animatable frame(int frame);
-    Vector2f size();
+    Vector2f animationSize();
 
     default int totalFrame() {
-        if(this.size().x > this.size().y) {
-            return (int) (this.size().x / this.size().y);
-        } else if(this.size().x < this.size().y) {
-            return (int) (this.size().y / this.size().x);
+        if(this.animationSize().x > this.animationSize().y) {
+            return (int) (this.animationSize().x / this.animationSize().y);
+        } else if(this.animationSize().x < this.animationSize().y) {
+            return (int) (this.animationSize().y / this.animationSize().x);
         } else {
             return 1;
         }
@@ -34,7 +35,7 @@ public interface Animatable extends Transformable {
             this.scale().x = scale;
             this.scale().y = scale;
         }
-        if (Clock.monotonic() - this.lastFrameTime() >= delta) {
+        else if (Clock.monotonic() - this.lastFrameTime() >= delta) {
             this.frame(this.frame() + 1);
             if (this.frame() == this.totalFrame())
                 this.frame(0);
@@ -42,7 +43,7 @@ public interface Animatable extends Transformable {
         }
 
         Matrix4f transformation = new Matrix4f().identity();
-        transformation.translate(this.scale().x * this.frame(), 0, 0);
+        transformation.translate(this.position().x + (this.frame() * this.scale().x), this.position().y, 0);
         return transformation;
     }
 
