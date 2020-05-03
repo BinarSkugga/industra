@@ -28,11 +28,11 @@ public class Game implements Disposable {
 
         // Textures
         rm.register(new TextureAtlas("main"));
-        rm.register(new Texture("animatedTexture").animated(true));
+        rm.register(new Texture("bob").defaultFrames(new int[]{1}));
 
         // Shaders & Models
         BaseShader baseShader = new BaseShader();
-        baseShader.addEntity(new PositionedModel("square", rm.getSubTexture("main/animated")));
+        baseShader.addEntity(new PositionedModel("square", rm.getTexture("bob")));
 
         rm.register(baseShader);
     }
