@@ -20,7 +20,7 @@ public interface Transformable {
         transformationMatrix.rotate((float) Math.toRadians(this.rotation().x), new Vector3f(1, 0, 0));
         transformationMatrix.rotate((float) Math.toRadians(this.rotation().y), new Vector3f(0, 1, 0));
         transformationMatrix.rotate((float) Math.toRadians(this.rotation().z), new Vector3f(0, 0, 1));
-        transformationMatrix.scaleXY(this.scale().x, this.scale().y);
+        transformationMatrix.scale(this.scale().x, this.scale().y, 0);
 
         return transformationMatrix;
     }

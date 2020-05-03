@@ -9,6 +9,7 @@ import com.industra.engine.Disposable;
 import com.industra.engine.graphic.model.Model;
 import lombok.Getter;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.Scanner;
 public class TextureAtlas implements Disposable, Bindable {
     @Getter private Texture texture;
     @Getter private String name;
-    private Map<String, SubTexture> subTextures;
+    private Map<String, Texture> subTextures;
 
     public TextureAtlas(String name, TextureInterpolation interpolation) {
         this.name = name;
@@ -41,17 +42,17 @@ public class TextureAtlas implements Disposable, Bindable {
 
             if(broken[1].contains("x")) {
                 String[] brokenSize = broken[1].split("x");
-                Vector2f size = new Vector2f(
-                        Float.parseFloat(brokenSize[0]),
-                        Float.parseFloat(brokenSize[1])
+                Vector2i size = new Vector2i(
+                        Integer.parseInt(brokenSize[0]),
+                        Integer.parseInt(brokenSize[1])
                 );
 
-                SubTexture sub = new SubTexture(this, position, size);
+                Texture sub = new Texture(this, subName, position, size);
                 if(broken.length > 2 && broken[2].equals("animated"))
                     sub.animated(true);
                 this.subTextures.put(subName, sub);
             } else {
-                this.subTextures.put(subName, new SubTexture(this, position, Float.parseFloat(broken[1])));
+                this.subTextures.put(subName, new Texture(this, subName, position, Integer.parseInt(broken[1])));
             }
         }
         scanner.close();
@@ -61,12 +62,8 @@ public class TextureAtlas implements Disposable, Bindable {
         this(name, TextureInterpolation.NEAREST);
     }
 
-    public SubTexture getSubTexture(String name) {
+    public Texture getSubTexture(String name) {
         return this.subTextures.get(name);
-    }
-
-    public SubTexture getSubTexture(Vector2f position, float size) {
-        return new SubTexture(this, position, size);
     }
 
     @Override

@@ -7,7 +7,6 @@ package com.industra.engine.graphic;
 import com.industra.engine.Bindable;
 import com.industra.engine.Disposable;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector2i;
 
 public interface Texturable extends Bindable, Disposable {

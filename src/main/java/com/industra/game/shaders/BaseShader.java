@@ -6,11 +6,8 @@ package com.industra.game.shaders;
 
 import com.industra.Constants;
 import com.industra.engine.graphic.shader.ShaderProgram;
-import com.industra.engine.graphic.texture.SubTexture;
 import com.industra.game.PositionedModel;
-import com.industra.utils.Logger;
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
 
 public class BaseShader extends ShaderProgram<PositionedModel> {
     private Matrix4f ortho;
@@ -22,13 +19,9 @@ public class BaseShader extends ShaderProgram<PositionedModel> {
 
     @Override
     public void accept(PositionedModel object) {
-        if(SubTexture.class.isAssignableFrom(object.model().texture().getClass())){
-            Vector4f position = new Vector4f(((SubTexture)object.model().texture()).position().x, ((SubTexture)object.model().texture()).position().y, 1, 1);
-            Logger.out(position.mul(object.model().texture().texCoordTransformation()));
-        }
-        this.load("texCoordTransformation", object.model().texture().texCoordTransformation());
         this.load("projection", this.ortho);
         this.load("transformation", object.transformation());
+        this.load("texCoordTransformation", object.model().texture().texCoordTransformation());
     }
 
     @Override

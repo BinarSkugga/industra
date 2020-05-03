@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL40.*;
 
 public class GLContext implements Disposable {
     public void init() {

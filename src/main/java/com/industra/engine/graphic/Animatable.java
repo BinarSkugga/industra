@@ -5,7 +5,6 @@
 package com.industra.engine.graphic;
 
 import com.industra.utils.Clock;
-import com.industra.utils.Logger;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 

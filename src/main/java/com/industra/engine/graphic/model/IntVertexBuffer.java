@@ -7,13 +7,13 @@ package com.industra.engine.graphic.model;
 import lombok.Getter;
 import lombok.NonNull;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL40;
 
 import java.nio.IntBuffer;
 
 public class IntVertexBuffer extends VertexBuffer {
     @Getter private IntBuffer data;
-    @Getter private int type = GL11.GL_INT;
+    @Getter private int type = GL40.GL_INT;
 
     public IntVertexBuffer(@NonNull int[] data) {
         super();

@@ -11,9 +11,7 @@ import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL40;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -97,13 +95,13 @@ public class Model implements Disposable, Drawable {
     @Override
     public void draw() {
         this.va.bind();
-        for (int i = 0; i < this.va.buffers().size(); i++) GL20.glEnableVertexAttribArray(i);
+        for (int i = 0; i < this.va.buffers().size(); i++) GL40.glEnableVertexAttribArray(i);
         if (this.texture != null) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
+            GL40.glActiveTexture(GL40.GL_TEXTURE0);
             this.texture.bind();
         }
-        GL11.glDrawElements(GL11.GL_TRIANGLES, this.indicesCount, GL11.GL_UNSIGNED_INT, 0);
-        for (int i = 0; i < this.va.buffers().size(); i++) GL20.glDisableVertexAttribArray(i);
+        GL40.glDrawElements(GL40.GL_TRIANGLES, this.indicesCount, GL40.GL_UNSIGNED_INT, 0);
+        for (int i = 0; i < this.va.buffers().size(); i++) GL40.glDisableVertexAttribArray(i);
     }
 
     @Override
