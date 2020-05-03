@@ -14,6 +14,7 @@ import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
 import com.industra.utils.Clock;
+import com.industra.utils.Logger;
 import lombok.Getter;
 import org.joml.Vector2f;
 
@@ -27,6 +28,7 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
     // Complete rotation per second
     private float rotationSpeed = 1.5f;
 
+    private boolean moving = false;
     private boolean running = false;
     private float runningMultiplicator = 3;
 
@@ -53,8 +55,15 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
     public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
         if (dpressed.any(Key.W, Key.S, Key.A, Key.D))
             this.running = true;
-        if (idle.all(Key.W, Key.S, Key.A, Key.D))
+        if (pressed.any(Key.W, Key.S, Key.A, Key.D))
+            this.moving = true;
+
+        if (idle.all(Key.W, Key.S, Key.A, Key.D)) {
+            this.moving = false;
             this.running = false;
+        }
+
+        this.model.texture().animated(this.moving || this.running);
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
         if (held.has(Key.W))

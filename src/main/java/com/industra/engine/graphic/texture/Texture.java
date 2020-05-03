@@ -25,7 +25,8 @@ import java.nio.ByteBuffer;
 
 public class Texture implements Texturable, Transformable {
     private static final int COLOR_SIZE = 4;
-    private static final int FRAME_TIME = 500;
+    private static final int FRAME_TIME = 150;
+    private static final int RETURN_FRAME_TIME = 50;
     private static int LAST_BIND = 0;
 
     @Getter private int id;
@@ -37,10 +38,12 @@ public class Texture implements Texturable, Transformable {
     @Getter private Vector2f position;
     @Getter private float scaler;
 
+    @Getter @Setter private int defaultFrame = 0;
     @Getter private int totalFrame = 0;
-    @Getter private int frame = 0;
+    @Getter private int frame = this.defaultFrame;
     @Getter private long changed = 0;
-    @Getter @Setter private boolean animated = false;
+    @Getter private boolean animated = false;
+    @Getter private boolean returning = false;
 
     public Texture(@NonNull String name, @NonNull TextureInterpolation interpolation) {
         try {
@@ -94,7 +97,7 @@ public class Texture implements Texturable, Transformable {
         this.scale = new Vector2f(this.scaler, this.scaler);
 
         if(this.imageSize.x != this.imageSize.y) {
-            this.totalFrame = Math.max(this.imageSize.x, this.imageSize.y) / (int) scaler;
+            this.totalFrame = Math.max(this.imageSize.x, this.imageSize.y) / (int) this.scaler;
         }
     }
 
@@ -104,7 +107,6 @@ public class Texture implements Texturable, Transformable {
 
     @Override
     public void bind() {
-        Logger.out(this.id);
         if(this.id != LAST_BIND) {
             LAST_BIND = this.id;
             GL40.glBindTexture(GL40.GL_TEXTURE_RECTANGLE, this.id);
@@ -122,9 +124,10 @@ public class Texture implements Texturable, Transformable {
         GL40.glDeleteTextures(this.id);
     }
 
-    public Texture frame(int frame) {
-        if(!animated)
-            this.frame = frame;
+    public Texture animated(boolean animated) {
+        if(this.animated != animated)
+            this.returning = !animated;
+        this.animated = animated;
         return this;
     }
 
@@ -135,22 +138,30 @@ public class Texture implements Texturable, Transformable {
 
     @Override
     public Matrix4f texCoordTransformation() {
-        if(this.animated) {
+        if(this.animated || this.returning) {
             if (this.changed == 0) this.changed = Clock.monotonic();
-            if (this.changed + FRAME_TIME < Clock.monotonic()) {
-                this.frame += 1;
-                if (this.frame == this.totalFrame) this.frame = 0;
-                this.changed = Clock.monotonic();
-            }
-
-            if (this.imageSize.x > this.imageSize.y) {
-                this.position.x = this.scale.x * this.frame;
-            } else if (this.imageSize.y > this.imageSize.x) {
-                this.position.y = this.scale.y * this.frame;
+            if(this.returning) {
+                if (this.changed + RETURN_FRAME_TIME <= Clock.monotonic()) {
+                    this.frame += (this.defaultFrame >= this.frame ? 1 : -1);
+                    if (this.frame == this.defaultFrame) this.returning = false;
+                    this.changed = Clock.monotonic();
+                }
+            } else {
+                if (this.changed + FRAME_TIME <= Clock.monotonic()) {
+                    this.frame += 1;
+                    if (this.frame == this.totalFrame) this.frame = 0;
+                    this.changed = Clock.monotonic();
+                }
             }
         }
-        this.position.add(this.rootPosition);
 
+        if (this.imageSize.x > this.imageSize.y) {
+            this.position.x = this.scale.x * this.frame;
+        } else if (this.imageSize.y > this.imageSize.x) {
+            this.position.y = this.scale.y * this.frame;
+        }
+
+        this.position.add(this.rootPosition);
         Matrix4f transformation = this.transformation();
         this.position.sub(this.rootPosition);
 
