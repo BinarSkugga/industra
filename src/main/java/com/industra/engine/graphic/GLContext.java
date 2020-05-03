@@ -7,12 +7,13 @@ package com.industra.engine.graphic;
 import com.industra.engine.Disposable;
 import com.industra.engine.ResourceManager;
 import com.industra.engine.Window;
+import com.industra.engine.graphic.shader.ShaderProgram;
 import com.industra.utils.Logger;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL40.*;
 
 public class GLContext implements Disposable {
     public void init() {

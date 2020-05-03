@@ -5,7 +5,7 @@
 package com.industra.game.shaders;
 
 import com.industra.Constants;
-import com.industra.engine.graphic.ShaderProgram;
+import com.industra.engine.graphic.shader.ShaderProgram;
 import com.industra.game.PositionedModel;
 import org.joml.Matrix4f;
 
@@ -21,16 +21,18 @@ public class BaseShader extends ShaderProgram<PositionedModel> {
     public void accept(PositionedModel object) {
         this.load("projection", this.ortho);
         this.load("transformation", object.transformation());
+        this.load("texCoordTransformation", object.model().texture().texCoordTransformation());
     }
 
     @Override
     protected void registerAttributes() {
         this.attribute("position", 0);
-        this.attribute("texCoords", 1);
+        this.attribute("texCoord", 1);
     }
 
     @Override
     protected void registerUniforms() {
+        this.uniform("texCoordTransformation");
         this.uniform("projection");
         this.uniform("transformation");
     }

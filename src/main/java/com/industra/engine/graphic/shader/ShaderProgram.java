@@ -2,13 +2,14 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.shader;
 
 import com.industra.engine.Bindable;
 import com.industra.engine.Disposable;
+import com.industra.engine.graphic.Drawable;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL40;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class ShaderProgram<T extends Drawable> implements Disposable, Bindable, Consumer<T> {
+    private static int LAST_BIND = 0;
+
     private int id;
     private VertexShader vShader;
     private FragmentShader fShader;
@@ -28,16 +31,16 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
     public ShaderProgram(VertexShader vShader, FragmentShader fShader) {
         this.vShader = vShader;
         this.fShader = fShader;
-        this.id = GL20.glCreateProgram();
+        this.id = GL40.glCreateProgram();
         this.locations = new HashMap<>();
         this.entities = new ArrayList<>();
 
-        GL20.glAttachShader(this.id, this.vShader.id());
-        GL20.glAttachShader(this.id, this.fShader.id());
+        GL40.glAttachShader(this.id, this.vShader.id());
+        GL40.glAttachShader(this.id, this.fShader.id());
         this.registerAttributes();
 
-        GL20.glLinkProgram(this.id);
-        GL20.glValidateProgram(this.id);
+        GL40.glLinkProgram(this.id);
+        GL40.glValidateProgram(this.id);
         this.registerUniforms();
     }
 
@@ -50,12 +53,11 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
     protected abstract void registerUniforms();
 
     protected void attribute(String name, int index) {
-        GL20.glBindAttribLocation(this.id, index, name);
+        GL40.glBindAttribLocation(this.id, index, name);
     }
 
     protected void uniform(String name) {
-        int location = GL20.glGetUniformLocation(this.id, name);
-        ;
+        int location = GL40.glGetUniformLocation(this.id, name);
         this.locations.put(name, location);
     }
 
@@ -63,17 +65,21 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         matrix.get(buffer);
 
-        GL20.glUniformMatrix4fv(this.locations.get(name), false, buffer);
+        GL40.glUniformMatrix4fv(this.locations.get(name), false, buffer);
     }
 
     @Override
     public void bind() {
-        GL20.glUseProgram(this.id);
+        if(this.id != LAST_BIND) {
+            LAST_BIND = this.id;
+            GL40.glUseProgram(this.id);
+        }
     }
 
     @Override
     public void unbind() {
-        GL20.glUseProgram(0);
+        GL40.glUseProgram(0);
+        LAST_BIND = 0;
     }
 
     @Override
@@ -84,11 +90,11 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
         }
 
         this.unbind();
-        GL20.glDetachShader(this.id, this.vShader.id());
-        GL20.glDetachShader(this.id, this.fShader.id());
-        GL20.glDeleteShader(this.vShader.id());
-        GL20.glDeleteShader(this.fShader.id());
-        GL20.glDeleteProgram(this.id);
+        GL40.glDetachShader(this.id, this.vShader.id());
+        GL40.glDetachShader(this.id, this.fShader.id());
+        GL40.glDeleteShader(this.vShader.id());
+        GL40.glDeleteShader(this.fShader.id());
+        GL40.glDeleteProgram(this.id);
     }
 
     public T addEntity(T entity) {
@@ -102,7 +108,6 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
             this.accept(entity);
             entity.draw();
         });
-        this.unbind();
     }
 
     @Override

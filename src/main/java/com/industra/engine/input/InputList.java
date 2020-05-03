@@ -4,10 +4,10 @@
 
 package com.industra.engine.input;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class InputList extends ArrayList<Integer> {
+public class InputList extends ConcurrentLinkedQueue<Integer> {
     public boolean has(Integer key) {
         return this.contains(key);
     }

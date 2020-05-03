@@ -5,49 +5,40 @@
 package com.industra.game;
 
 import com.industra.engine.Disposable;
-import com.industra.engine.ResourceManager;
 import com.industra.engine.graphic.Drawable;
-import com.industra.engine.graphic.Model;
 import com.industra.engine.graphic.SimplifiedTransformable;
+import com.industra.engine.graphic.Texturable;
+import com.industra.engine.graphic.model.Model;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
+import com.industra.utils.Clock;
+import com.industra.utils.Logger;
 import lombok.Getter;
 import org.joml.Vector2f;
 
 public class PositionedModel implements InputListener, Drawable, Disposable, SimplifiedTransformable {
-    @Getter private Vector2f position;
+    @Getter private Vector2f position = new Vector2f(0, 0);
     @Getter private float rotationZ = 0;
-    @Getter private float scaleXY = 60;
+    @Getter private float scaleXY = 30;
 
-    private float speed = 1f;
-    private float rotationSpeed = 6f;
+    // Pixel per second
+    private float speed = 200f;
+    // Complete rotation per second
+    private float rotationSpeed = 1.5f;
+
+    private boolean moving = false;
     private boolean running = false;
-    private float runningMultiplicator = 5;
+    private float runningMultiplicator = 3;
 
-    private Model model;
+    @Getter private Model model;
 
-    public PositionedModel(String model, String texture, Vector2f position) {
+    public PositionedModel(String model, Texturable texture) {
         InputTracker.get().subscribe(this);
         this.model = Model.load(model);
         if (texture != null)
-            this.model.texture(ResourceManager.get().getTexture(texture));
-        else
-            this.model.texture(ResourceManager.get().getTexture("default"));
-        this.position = position;
-    }
-
-    public PositionedModel(String model, Vector2f position) {
-        this(model, null, position);
-    }
-
-    public PositionedModel(String model, String texture) {
-        this(model, texture, new Vector2f(0, 0));
-    }
-
-    public PositionedModel(String model) {
-        this(model, null, new Vector2f(0, 0));
+            this.model.texture(texture);
     }
 
     @Override
@@ -64,26 +55,34 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
     public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
         if (dpressed.any(Key.W, Key.S, Key.A, Key.D))
             this.running = true;
-        if (idle.all(Key.W, Key.S, Key.A, Key.D))
+        if (pressed.any(Key.W, Key.S, Key.A, Key.D))
+            this.moving = true;
+
+        if (idle.all(Key.W, Key.S, Key.A, Key.D)) {
+            this.moving = false;
             this.running = false;
+        }
+
+        this.model.texture().animated(this.moving || this.running);
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
         if (held.has(Key.W))
-            movingVector.y = -this.speed;
+            movingVector.y = -1;
         else if (held.has(Key.S))
-            movingVector.y = this.speed;
+            movingVector.y = 1;
         if (held.has(Key.A))
-            movingVector.x = -this.speed;
+            movingVector.x = -1;
         else if (held.has(Key.D))
-            movingVector.x = this.speed;
+            movingVector.x = 1;
 
         if (held.has(Key.Q))
-            this.rotationZ -= rotationSpeed;
+            this.rotationZ -= Clock.relativize(this.rotationSpeed * 360f);
         else if (held.has(Key.E))
-            this.rotationZ += rotationSpeed;
+            this.rotationZ += Clock.relativize(this.rotationSpeed * 360f);
 
-        if (!movingVector.equals(0, 0)) {
+        if (!movingVector.equals(0, 0) && Clock.fps() > 0) {
             movingVector.normalize(movingVector);
+            movingVector.mul(Clock.relativize(this.speed), movingVector);
 
             if (this.running)
                 movingVector.mul(this.runningMultiplicator, movingVector);

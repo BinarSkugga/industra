@@ -6,20 +6,23 @@ package com.industra.engine;
 
 import com.industra.Constants;
 import com.industra.engine.graphic.GLContext;
+import com.industra.engine.input.InputList;
+import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
+import com.industra.engine.input.Key;
 import com.industra.utils.Clock;
 import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.Timer;
+
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Window implements Disposable {
+public class Window implements Disposable, InputListener {
     private static Window instance;
-
-    private Clock renderClock = new Clock();
-    private Clock updateClock = new Clock();
+    private static Timer timer;
 
     @Getter private long window;
     @Getter private int width, height;
@@ -32,8 +35,7 @@ public class Window implements Disposable {
         this.width = width;
         this.height = height;
         this.title = title;
-        this.renderClock.calibrate(Constants.FPS_CAP);
-        this.updateClock.calibrate(Constants.FPS_CAP);
+        InputTracker.get().subscribe(this);
     }
 
     public static Window get() {
@@ -59,25 +61,13 @@ public class Window implements Disposable {
         this.context.init();
     }
 
-    public Thread updateLoop() {
-        return new Thread(() -> {
-            while (!glfwWindowShouldClose(this.window)) {
-                this.updateClock.tick();
-                InputTracker.get().update(this.window);
-                this.updateClock.tock();
-            }
-        });
-    }
-
     public void run() {
-        this.updateLoop().start();
         while (!glfwWindowShouldClose(this.window)) {
-            this.renderClock.tick();
-
             this.context.run();
             glfwPollEvents();
+            InputTracker.get().update(this.window);
 
-            this.renderClock.tock();
+            Clock.sync(60);
         }
     }
 
@@ -87,5 +77,11 @@ public class Window implements Disposable {
 
         glfwDestroyWindow(this.window);
         glfwTerminate();
+    }
+
+    @Override
+    public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
+        if(released.has(Key.ESCAPE))
+            glfwSetWindowShouldClose(this.window, true);
     }
 }

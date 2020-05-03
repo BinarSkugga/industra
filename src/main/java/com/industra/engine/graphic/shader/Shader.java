@@ -2,13 +2,11 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine.graphic.shader;
 
 import com.industra.utils.Logger;
 import lombok.Getter;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL40;
 
 import java.io.InputStream;
 import java.util.Scanner;
@@ -29,8 +27,8 @@ public abstract class Shader {
         StringBuilder source = new StringBuilder();
         try {
             String extension;
-            if (this.type == GL20.GL_FRAGMENT_SHADER) extension = "frag";
-            else if (this.type == GL32.GL_GEOMETRY_SHADER) extension = "geo";
+            if (this.type == GL40.GL_FRAGMENT_SHADER) extension = "frag";
+            else if (this.type == GL40.GL_GEOMETRY_SHADER) extension = "geo";
             else extension = "vert";
 
             InputStream shaderStream = Shader.class.getClassLoader()
@@ -42,12 +40,12 @@ public abstract class Shader {
             }
             scanner.close();
 
-            this.id = GL20.glCreateShader(this.type);
-            GL20.glShaderSource(this.id, source);
-            GL20.glCompileShader(this.id);
+            this.id = GL40.glCreateShader(this.type);
+            GL40.glShaderSource(this.id, source);
+            GL40.glCompileShader(this.id);
 
-            if (GL20.glGetShaderi(this.id, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-                Logger.error(GL20.glGetShaderInfoLog(this.id, 500));
+            if (GL40.glGetShaderi(this.id, GL40.GL_COMPILE_STATUS) == GL40.GL_FALSE) {
+                Logger.error(GL40.glGetShaderInfoLog(this.id, 500));
             }
         } catch (Exception e) {
             // TODO: Don't swallow this
