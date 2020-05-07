@@ -9,6 +9,7 @@ import com.industra.engine.graphic.Drawable;
 import com.industra.engine.graphic.SimplifiedTransformable;
 import com.industra.engine.graphic.Texturable;
 import com.industra.engine.graphic.model.Model;
+import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
@@ -53,6 +54,8 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
 
     @Override
     public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
+        Texture text = (Texture) this.model.texture();
+
         if (dpressed.any(Key.W, Key.S, Key.A, Key.D))
             this.running = true;
         if (pressed.any(Key.W, Key.S, Key.A, Key.D))
@@ -63,7 +66,20 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
             this.running = false;
         }
 
-        this.model.texture().animated(this.moving || this.running);
+        if(this.moving)
+            text.frameTime(300);
+        if(this.running)
+            text.frameTime(100);
+
+        text.animated(this.moving || this.running);
+        if (held.has(Key.W))
+            text.line(3);
+        if (held.has(Key.S))
+            text.line(0);
+        if (held.has(Key.A))
+            text.line(1);
+        if (held.has(Key.D))
+            text.line(2);
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
         if (held.has(Key.W))

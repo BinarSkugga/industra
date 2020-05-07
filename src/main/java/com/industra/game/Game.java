@@ -11,6 +11,7 @@ import com.industra.engine.graphic.GLContext;
 import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.graphic.texture.TextureAtlas;
 import com.industra.game.shaders.BaseShader;
+import org.joml.Vector2f;
 
 public class Game implements Disposable {
     public void run() {
@@ -28,11 +29,11 @@ public class Game implements Disposable {
 
         // Textures
         rm.register(new TextureAtlas("main"));
-        rm.register(new Texture("bob").defaultFrames(new int[]{1}));
+        rm.register(new Texture("fighter").multiLine(new Vector2f(32, 48)));
 
         // Shaders & Models
         BaseShader baseShader = new BaseShader();
-        baseShader.addEntity(new PositionedModel("square", rm.getTexture("bob")));
+        baseShader.addEntity(new PositionedModel("square", rm.getTexture("fighter")));
 
         rm.register(baseShader);
     }

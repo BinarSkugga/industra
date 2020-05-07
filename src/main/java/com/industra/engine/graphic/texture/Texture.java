@@ -7,7 +7,6 @@ package com.industra.engine.graphic.texture;
 import com.industra.engine.graphic.Texturable;
 import com.industra.engine.graphic.Transformable;
 import com.industra.utils.Clock;
-import com.industra.utils.Logger;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -25,8 +24,6 @@ import java.nio.ByteBuffer;
 
 public class Texture implements Texturable, Transformable {
     private static final int COLOR_SIZE = 4;
-    private static final int FRAME_TIME = 300;
-    private static final int RETURN_FRAME_TIME = 100;
     private static int LAST_BIND = 0;
 
     @Getter private int id;
@@ -38,9 +35,17 @@ public class Texture implements Texturable, Transformable {
     @Getter private Vector2f position;
     @Getter private float scaler;
 
+    @Getter @Setter private int frameTime = 300;
+    @Getter @Setter private int returnFrameTime = 100;
+
     @Getter @Setter private int[] defaultFrames = new int[]{0};
     @Getter private int totalFrame = 0;
     @Getter private int frame = this.defaultFrames[0];
+
+    @Getter private int defaultLine = 0;
+    @Getter private int totalLine = 0;
+    @Getter @Setter private int line = this.defaultLine;
+
     @Getter private long changed = 0;
     @Getter private boolean animated = false;
     @Getter private boolean returning = false;
@@ -131,6 +136,14 @@ public class Texture implements Texturable, Transformable {
         return this;
     }
 
+    public Texture multiLine(Vector2f scale) {
+        this.totalLine = (int)(this.imageSize.y / scale.y);
+        this.totalFrame = (int)(this.imageSize.x / scale.x);
+        this.scale = scale;
+
+        return this;
+    }
+
     private int closetDefault(int frame) {
         int distance = Math.abs(this.defaultFrames[0] - frame);
         int idx = 0;
@@ -161,14 +174,14 @@ public class Texture implements Texturable, Transformable {
         if(this.animated || this.returning) {
             if(this.returning) {
                 int closest = this.closetDefault(this.frame);
-                if (this.changed + RETURN_FRAME_TIME <= Clock.monotonic()) {
+                if (this.changed + this.returnFrameTime <= Clock.monotonic()) {
                     if(closest > this.frame) this.frame += 1;
                     else if(closest < this.frame) this.frame -= 1;
                     else this.returning = false;
                     this.changed = Clock.monotonic();
                 }
             } else {
-                if (this.changed + FRAME_TIME <= Clock.monotonic()) {
+                if (this.changed + this.frameTime <= Clock.monotonic()) {
                     this.frame += 1;
                     if (this.frame == this.totalFrame) this.frame = 0;
                     this.changed = Clock.monotonic();
@@ -176,13 +189,15 @@ public class Texture implements Texturable, Transformable {
             }
         }
 
-        if (this.imageSize.x > this.imageSize.y) {
+        if (this.imageSize.x > this.imageSize.y || this.totalLine > 0) {
             this.position.x = this.scale.x * this.frame;
         } else if (this.imageSize.y > this.imageSize.x) {
             this.position.y = this.scale.y * this.frame;
         }
 
-        Logger.out(this.position.x);
+        if(this.totalLine > 0)
+            this.rootPosition.y = this.line * this.scale.y;
+
         this.position.add(this.rootPosition);
         Matrix4f transformation = this.transformation();
         this.position.sub(this.rootPosition);
