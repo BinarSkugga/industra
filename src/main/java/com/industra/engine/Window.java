@@ -6,6 +6,7 @@ package com.industra.engine;
 
 import com.industra.Constants;
 import com.industra.engine.graphic.GLContext;
+import com.industra.engine.graphic.physics.World;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
@@ -65,6 +66,7 @@ public class Window implements Disposable, InputListener {
         while (!glfwWindowShouldClose(this.window)) {
             this.context.run();
             glfwPollEvents();
+            World.get().step(Clock.deltaTime(), 1, 1);
             InputTracker.get().update(this.window);
 
             Clock.sync(60);

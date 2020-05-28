@@ -10,7 +10,6 @@ import com.industra.engine.graphic.Texturable;
 import com.industra.utils.Logger;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import org.lwjgl.opengl.GL40;
 
 import java.io.InputStream;
@@ -18,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Model implements Disposable, Drawable {
-    @Getter @Setter
-    Texturable texture;
     @Getter private VertexArray va;
     @Getter private int indicesCount;
 
@@ -93,12 +90,12 @@ public class Model implements Disposable, Drawable {
     }
 
     @Override
-    public void draw() {
+    public void draw(Texturable texture) {
         this.va.bind();
         for (int i = 0; i < this.va.buffers().size(); i++) GL40.glEnableVertexAttribArray(i);
-        if (this.texture != null) {
+        if (texture != null) {
             GL40.glActiveTexture(GL40.GL_TEXTURE0);
-            this.texture.bind();
+            texture.bind();
         }
         GL40.glDrawElements(GL40.GL_TRIANGLES, this.indicesCount, GL40.GL_UNSIGNED_INT, 0);
         for (int i = 0; i < this.va.buffers().size(); i++) GL40.glDisableVertexAttribArray(i);
@@ -106,8 +103,6 @@ public class Model implements Disposable, Drawable {
 
     @Override
     public void dispose() {
-        if (this.texture != null)
-            this.texture.dispose();
         this.va.dispose();
     }
 }

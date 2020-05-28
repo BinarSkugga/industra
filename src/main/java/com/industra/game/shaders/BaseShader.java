@@ -6,10 +6,10 @@ package com.industra.game.shaders;
 
 import com.industra.Constants;
 import com.industra.engine.graphic.shader.ShaderProgram;
-import com.industra.game.PositionedModel;
+import com.industra.game.PhysicalModel;
 import org.joml.Matrix4f;
 
-public class BaseShader extends ShaderProgram<PositionedModel> {
+public class BaseShader extends ShaderProgram<PhysicalModel> {
     private Matrix4f ortho;
 
     public BaseShader() {
@@ -18,10 +18,10 @@ public class BaseShader extends ShaderProgram<PositionedModel> {
     }
 
     @Override
-    public void accept(PositionedModel object) {
+    public void accept(PhysicalModel object) {
         this.load("projection", this.ortho);
         this.load("transformation", object.transformation());
-        this.load("texCoordTransformation", object.model().texture().texCoordTransformation());
+        this.load("texCoordTransformation", object.texture().texCoordTransformation());
     }
 
     @Override

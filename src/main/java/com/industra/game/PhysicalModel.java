@@ -7,23 +7,18 @@ package com.industra.game;
 import com.industra.engine.Disposable;
 import com.industra.engine.graphic.Drawable;
 import com.industra.engine.graphic.SimplifiedTransformable;
-import com.industra.engine.graphic.Texturable;
 import com.industra.engine.graphic.model.Model;
+import com.industra.engine.graphic.physics.CollisionBox;
 import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
 import com.industra.utils.Clock;
-import com.industra.utils.Logger;
 import lombok.Getter;
 import org.joml.Vector2f;
 
-public class PositionedModel implements InputListener, Drawable, Disposable, SimplifiedTransformable {
-    @Getter private Vector2f position = new Vector2f(0, 0);
-    @Getter private float rotationZ = 0;
-    @Getter private float scaleXY = 30;
-
+public class PhysicalModel implements InputListener, Drawable, Disposable, SimplifiedTransformable {
     // Pixel per second
     private float speed = 200f;
     // Complete rotation per second
@@ -34,17 +29,34 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
     private float runningMultiplicator = 3;
 
     @Getter private Model model;
+    @Getter private CollisionBox collisionBox;
+    @Getter private Texture texture;
 
-    public PositionedModel(String model, Texturable texture) {
+    public PhysicalModel(Model model, CollisionBox box, Texture texture) {
         InputTracker.get().subscribe(this);
-        this.model = Model.load(model);
-        if (texture != null)
-            this.model.texture(texture);
+        this.model = model;
+        this.collisionBox = box;
+        this.texture = texture;
+    }
+
+    @Override
+    public Vector2f position() {
+        return this.collisionBox.position();
+    }
+
+    @Override
+    public float rotationZ() {
+        return this.collisionBox.rotation().z;
+    }
+
+    @Override
+    public float scaleXY() {
+        return this.collisionBox.scale().x;
     }
 
     @Override
     public void draw() {
-        this.model.draw();
+        this.model.draw(this.texture);
     }
 
     @Override
@@ -54,8 +66,6 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
 
     @Override
     public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
-        Texture text = (Texture) this.model.texture();
-
         if (dpressed.any(Key.W, Key.S, Key.A, Key.D))
             this.running = true;
         if (pressed.any(Key.W, Key.S, Key.A, Key.D))
@@ -67,19 +77,19 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
         }
 
         if(this.moving)
-            text.frameTime(300);
+            this.texture.frameTime(300);
         if(this.running)
-            text.frameTime(100);
+            this.texture.frameTime(100);
 
-        text.animated(this.moving || this.running);
+        this.texture.animated(this.moving || this.running);
         if (held.has(Key.W))
-            text.line(3);
+            this.texture.line(3);
         if (held.has(Key.S))
-            text.line(0);
+            this.texture.line(0);
         if (held.has(Key.A))
-            text.line(1);
+            this.texture.line(1);
         if (held.has(Key.D))
-            text.line(2);
+            this.texture.line(2);
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
         if (held.has(Key.W))
@@ -91,10 +101,11 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
         else if (held.has(Key.D))
             movingVector.x = 1;
 
+
         if (held.has(Key.Q))
-            this.rotationZ -= Clock.relativize(this.rotationSpeed * 360f);
+            this.collisionBox.rotate(Clock.relativize(this.rotationSpeed * 360f));
         else if (held.has(Key.E))
-            this.rotationZ += Clock.relativize(this.rotationSpeed * 360f);
+            this.collisionBox.rotate(Clock.relativize(this.rotationSpeed * 360f));
 
         if (!movingVector.equals(0, 0) && Clock.fps() > 0) {
             movingVector.normalize(movingVector);
@@ -103,7 +114,7 @@ public class PositionedModel implements InputListener, Drawable, Disposable, Sim
             if (this.running)
                 movingVector.mul(this.runningMultiplicator, movingVector);
 
-            this.position = this.position.add(movingVector);
+            this.collisionBox.translate(movingVector);
         }
     }
 }
