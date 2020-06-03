@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2020 Charles Smith
+ */
+
+package com.industra.engine.spine;
+
+public enum TimelineType {
+    ROTATE, TRANSLATE, SCALE, SHEAR,
+    ATTACHMENT, COLOR, DEFORM,
+    EVENT, DRAW_ORDER,
+    CONSTRAINT, TRANSFORM_CONSTRAINT,
+    PATH_CONSTRAINT_POSITION, PATH_CONSTRAINT_SPACING, PATH_CONSTRAINT_MIX,
+    TWO_COLOR;
+}
