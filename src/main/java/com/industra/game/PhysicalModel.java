@@ -82,23 +82,23 @@ public class PhysicalModel implements InputListener, Drawable, Disposable, Simpl
             this.texture.frameTime(100);
 
         this.texture.animated(this.moving || this.running);
-        if (held.has(Key.W))
+        if (held.has(Key.W) || pressed.has(Key.W))
             this.texture.line(3);
-        if (held.has(Key.S))
+        if (held.has(Key.S) || pressed.has(Key.S))
             this.texture.line(0);
-        if (held.has(Key.A))
+        if (held.has(Key.A) || pressed.has(Key.A))
             this.texture.line(1);
-        if (held.has(Key.D))
+        if (held.has(Key.D) || pressed.has(Key.D))
             this.texture.line(2);
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
-        if (held.has(Key.W))
+        if (held.has(Key.W) || pressed.has(Key.W))
             movingVector.y = -1;
-        else if (held.has(Key.S))
+        else if (held.has(Key.S) || pressed.has(Key.S))
             movingVector.y = 1;
-        if (held.has(Key.A))
+        if (held.has(Key.A) || pressed.has(Key.A))
             movingVector.x = -1;
-        else if (held.has(Key.D))
+        else if (held.has(Key.D) || pressed.has(Key.D))
             movingVector.x = 1;
 
         if (held.has(Key.Q))
@@ -106,7 +106,12 @@ public class PhysicalModel implements InputListener, Drawable, Disposable, Simpl
         else if (held.has(Key.E))
             this.collisionBox.rotate(Clock.relativize(this.rotationSpeed * 360f));
 
-        if (!movingVector.equals(0, 0) && Clock.fps() > 0) {
+        if (held.has(Key.Z))
+            this.collisionBox.scale().add(this.rotationSpeed, this.rotationSpeed);
+        else if(held.has(Key.X))
+            this.collisionBox.scale().sub(this.rotationSpeed, this.rotationSpeed);
+
+        if (!movingVector.equals(0, 0)) {
             movingVector.normalize(movingVector);
             movingVector.mul(Clock.relativize(this.speed), movingVector);
 
