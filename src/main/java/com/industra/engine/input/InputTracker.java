@@ -23,7 +23,7 @@ public class InputTracker {
     public static final int INPUT_KEY_PRESSED = 1;
     public static final int INPUT_KEY_HELD = 2;
     public static final int INPUT_KEY_DPRESSED = 3;
-    public static final long INPUT_DOUBLE_TIMEOUT = TimeUnit.MILLISECONDS.toNanos(400);
+    public static final long INPUT_DOUBLE_TIMEOUT = TimeUnit.MILLISECONDS.toNanos(200);
 
     private static InputTracker tracker;
 
@@ -60,54 +60,42 @@ public class InputTracker {
 
     public void update(long window) {
         this.executor.submit(() -> {
-            for (Map.Entry<Integer, Integer> state : this.trackedStates.entrySet()) {
-                int previousState = state.getValue();
-                int glfwState = glfwGetKey(window, state.getKey());
-
-                // GLFW State Changed
-                if (glfwState != previousState) {
-                    // Key is IDLE
-                    if (glfwState == GLFW_IDLE) {
-                        if (previousState == INPUT_KEY_PRESSED || previousState == INPUT_KEY_HELD || previousState == INPUT_KEY_DPRESSED) {
-                            this.trackedStates.put(state.getKey(), INPUT_KEY_RELEASED);
-                        }
-                        if (previousState == INPUT_KEY_RELEASED) {
-                            this.trackedStates.put(state.getKey(), INPUT_KEY_IDLE);
-                        }
-                    }
-                    // Key is PRESSED but not on HELD
-                    else if (glfwState == GLFW_PRESS && previousState != INPUT_KEY_HELD) {
-                        if (previousState == INPUT_KEY_DPRESSED) {
-                            this.trackedStates.put(state.getKey(), INPUT_KEY_HELD);
-                        } else if (System.nanoTime() - this.trackedDPressed.get(state.getKey()) <= INPUT_DOUBLE_TIMEOUT) {
-                            this.trackedStates.put(state.getKey(), INPUT_KEY_DPRESSED);
-                        } else {
-                            this.trackedStates.put(state.getKey(), INPUT_KEY_PRESSED);
-                            this.trackedDPressed.put(state.getKey(), System.nanoTime());
-                        }
-                    }
-                }
-                // If no change and key was PRESSED or DPRESSED, put HELD state
-                else if (glfwState == GLFW_PRESS) {
-                    this.trackedStates.put(state.getKey(), INPUT_KEY_HELD);
-                }
-            }
-
             InputList pressed = new InputList();
             InputList dpressed = new InputList();
             InputList held = new InputList();
             InputList released = new InputList();
             InputList idle = new InputList();
 
-            this.trackedStates.forEach((key, value) -> {
-                if (value == INPUT_KEY_IDLE) idle.add(key);
-                else if (value == INPUT_KEY_PRESSED) pressed.add(key);
-                else if (value == INPUT_KEY_DPRESSED) dpressed.add(key);
-                else if (value == INPUT_KEY_HELD) held.add(key);
-                else if (value == INPUT_KEY_RELEASED) released.add(key);
-            });
+            for (Map.Entry<Integer, Integer> state : this.trackedStates.entrySet()) {
+                int previousState = state.getValue();
+                int key = state.getKey();
+                int glfwState = glfwGetKey(window, key);
 
-            this.listeners.forEach(listener -> {
+                if(glfwState == GLFW_IDLE) {
+                    if (previousState == INPUT_KEY_PRESSED || previousState == INPUT_KEY_HELD || previousState == INPUT_KEY_DPRESSED) {
+                        this.trackedStates.put(key, INPUT_KEY_RELEASED);
+                        this.trackedDPressed.put(key, System.nanoTime());
+                        released.add(key);
+                    } else {
+                        this.trackedStates.put(key, INPUT_KEY_IDLE);
+                        idle.add(key);
+                    }
+                } else {
+                    if(previousState != INPUT_KEY_DPRESSED && System.nanoTime() - this.trackedDPressed.get(key) <= INPUT_DOUBLE_TIMEOUT) {
+                        this.trackedStates.put(key, INPUT_KEY_DPRESSED);
+                        this.trackedDPressed.put(key, 0L);
+                        dpressed.add(key);
+                    } else if(previousState == INPUT_KEY_DPRESSED || previousState == INPUT_KEY_PRESSED || previousState == INPUT_KEY_HELD) {
+                        this.trackedStates.put(key, INPUT_KEY_HELD);
+                        held.add(key);
+                    } else {
+                        this.trackedStates.put(key, INPUT_KEY_PRESSED);
+                        pressed.add(key);
+                    }
+                }
+            }
+
+            this.listeners.parallelStream().forEach(listener -> {
                 listener.onKeyboardInput(pressed, dpressed, held, released, idle);
             });
         });
