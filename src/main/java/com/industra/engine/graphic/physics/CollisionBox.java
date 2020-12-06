@@ -69,12 +69,12 @@ public class CollisionBox implements Transformable {
 
     public void translate(Vector2f vector) {
         Vec2 newPosition = this.body.getPosition().add(new Vec2(vector.x, vector.y));
-        this.body.setTransform(newPosition, 0);
+        this.body.setTransform(newPosition, (float) Math.toRadians(this.angle));
     }
 
     public void rotate(float angle) {
         this.angle += angle;
-        this.body.setTransform(new Vec2(), (float) Math.toRadians(this.angle));
+        this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(this.angle));
     }
 
     @Override

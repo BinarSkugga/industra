@@ -101,9 +101,8 @@ public class PhysicalModel implements InputListener, Drawable, Disposable, Simpl
         else if (held.has(Key.D))
             movingVector.x = 1;
 
-
         if (held.has(Key.Q))
-            this.collisionBox.rotate(Clock.relativize(this.rotationSpeed * 360f));
+            this.collisionBox.rotate(-Clock.relativize(this.rotationSpeed * 360f));
         else if (held.has(Key.E))
             this.collisionBox.rotate(Clock.relativize(this.rotationSpeed * 360f));
 
