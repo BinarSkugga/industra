@@ -11,7 +11,7 @@ import com.industra.engine.graphic.GLContext;
 import com.industra.engine.graphic.Material;
 import com.industra.engine.graphic.model.Model;
 import com.industra.engine.graphic.physics.CollisionBox;
-import com.industra.engine.graphic.physics.materials.CharacterMaterial;
+import com.industra.engine.graphic.physics.materials.BaseMaterial;
 import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.graphic.texture.TextureAtlas;
 import com.industra.game.shaders.BaseShader;
@@ -33,18 +33,27 @@ public class Game implements Disposable {
 
         // Textures
         rm.register(new TextureAtlas("main"));
-        rm.register(new Texture("fighter").multiLine(new Vector2f(32, 48)));
+        rm.register(new Texture("turret_001").multiLine(new Vector2f(49)));
+        rm.register(new Texture("cannon_001").animated(false));
 
         // Material
-        Material defMat = new CharacterMaterial();
+        Material defMat = new BaseMaterial();
 
         // Shaders & Models
         BaseShader baseShader = new BaseShader();
-        baseShader.addEntity(new PhysicalModel(
-                        Model.load("square"),
-                        new CollisionBox(new Vector2f(30f), new Vector2f(100f, 100f), defMat),
-                        rm.getTexture("fighter")
-                ));
+
+        Cannon cannon = new Cannon(
+                Model.load("square"),
+                new CollisionBox(new Vector2f(60f), new Vector2f(-0.5f, -0.5f), defMat),
+                rm.getTexture("cannon_001")
+        );
+        Turret turret = new Turret(
+                Model.load("square"),
+                new CollisionBox(new Vector2f(60f), new Vector2f(150f, 150f), defMat),
+                rm.getTexture("turret_001")
+        );
+        cannon.turret(turret);
+        baseShader.addEntities(turret, cannon);
 
         rm.register(baseShader);
     }

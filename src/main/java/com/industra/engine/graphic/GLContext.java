@@ -19,11 +19,15 @@ public class GLContext implements Disposable {
     public void init() {
         glfwMakeContextCurrent(Window.get().window());
         GL.createCapabilities();
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         Logger.out("OpenGL Version " + glGetString(GL_VERSION));
     }
 
     public void run() {
-        glClearColor(0, 0, 0, 1);
+        glClearColor(1, 1, 1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // RENDER & UPDATE

@@ -5,9 +5,12 @@
 package com.industra.engine.graphic.physics.materials;
 
 import com.industra.engine.graphic.Material;
+import org.jbox2d.dynamics.BodyType;
 
-public class CharacterMaterial extends Material {
-    public CharacterMaterial() {
+public class BaseMaterial extends Material {
+    public BaseMaterial() {
+        this.density = 1f;
         this.friction = 1f;
+        this.type = BodyType.DYNAMIC;
     }
 }

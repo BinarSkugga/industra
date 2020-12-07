@@ -12,10 +12,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL40;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public abstract class ShaderProgram<T extends Drawable> implements Disposable, Bindable, Consumer<T> {
@@ -100,6 +97,13 @@ public abstract class ShaderProgram<T extends Drawable> implements Disposable, B
     public T addEntity(T entity) {
         this.entities.add(entity);
         return entity;
+    }
+
+    @SafeVarargs
+    public final List<T> addEntities(T... entities) {
+        List<T> ents = Arrays.asList(entities);
+        this.entities.addAll(ents);
+        return ents;
     }
 
     public void render() {

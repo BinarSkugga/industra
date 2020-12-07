@@ -9,15 +9,12 @@ import com.industra.engine.graphic.Transformable;
 import lombok.Getter;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.FixtureDef;
-import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class CollisionBox implements Transformable {
-    @Getter private static World world = com.industra.engine.graphic.physics.World.get();
+    @Getter private static World world = World.get();
 
     @Getter private Vector2f size;
     @Getter private float angle;
@@ -27,6 +24,7 @@ public class CollisionBox implements Transformable {
     @Getter private Material material;
 
     @Getter private Body body;
+    @Getter private Fixture fixture;
 
     public CollisionBox(Vector2f size, Vector2f position, float angle, Material material) {
         this.size = size;
@@ -40,14 +38,14 @@ public class CollisionBox implements Transformable {
         this.bodyDef.type = this.material.type();
         this.bodyDef.position.set(position.x, position.y);
         this.bodyDef.angle = this.angle;
-        this.body = world.createBody(this.bodyDef);
+        this.body = world.b2dworld().createBody(this.bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.friction = this.material.friction();
         fixtureDef.density = this.material.density();
         fixtureDef.restitution = this.material.restitution();
         fixtureDef.shape = this.shape;
-        this.body.createFixture(fixtureDef);
+        this.fixture = this.body.createFixture(fixtureDef);
     }
 
     public CollisionBox(Vector2f size, Vector2f position, Material material) {
@@ -64,7 +62,7 @@ public class CollisionBox implements Transformable {
     }
 
     public void torque(float torque) {
-        this.body.applyTorque(torque);
+        this.body.applyTorque(torque * 100000000f);
     }
 
     public void translate(Vector2f vector) {

@@ -82,14 +82,15 @@ public class PhysicalModel implements InputListener, Drawable, Disposable, Simpl
             this.texture.frameTime(100);
 
         this.texture.animated(this.moving || this.running);
-        if (held.has(Key.W) || pressed.has(Key.W))
-            this.texture.line(3);
-        if (held.has(Key.S) || pressed.has(Key.S))
-            this.texture.line(0);
-        if (held.has(Key.A) || pressed.has(Key.A))
-            this.texture.line(1);
-        if (held.has(Key.D) || pressed.has(Key.D))
-            this.texture.line(2);
+        this.texture.line(0);
+//        if (held.has(Key.W) || pressed.has(Key.W))
+//            this.texture.line(3);
+//        if (held.has(Key.S) || pressed.has(Key.S))
+//            this.texture.line(0);
+//        if (held.has(Key.A) || pressed.has(Key.A))
+//            this.texture.line(1);
+//        if (held.has(Key.D) || pressed.has(Key.D))
+//            this.texture.line(2);
 
         Vector2f movingVector = new Vector2f(0.0f, 0.0f);
         if (held.has(Key.W) || pressed.has(Key.W))

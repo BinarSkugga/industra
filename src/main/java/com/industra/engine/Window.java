@@ -30,6 +30,7 @@ public class Window implements Disposable, InputListener {
     @Getter private String title;
 
     @Setter private GLContext context;
+    @Getter private World world;
 
     private Window(int width, int height, @NonNull String title) {
         // TODO: Assign FPS, width and height from dynamic properties
@@ -59,15 +60,19 @@ public class Window implements Disposable, InputListener {
         Logger.out("GLFW Version " + GLFW_VERSION_MAJOR + "." + GLFW_VERSION_MINOR + "." + GLFW_VERSION_REVISION);
 
         this.window = glfwCreateWindow(this.width, this.height, this.title, 0, 0);
+        this.world = new World();
         this.context.init();
     }
 
     public void run() {
+        this.world.createJoints(Clock.deltaTime());
+
         while (!glfwWindowShouldClose(this.window)) {
-            this.context.run();
             glfwPollEvents();
-            World.get().step(Clock.deltaTime(), 1, 1);
             InputTracker.get().update(this.window);
+
+            this.context.run();
+            this.world.update(Clock.deltaTime());
 
             Clock.sync(60);
         }

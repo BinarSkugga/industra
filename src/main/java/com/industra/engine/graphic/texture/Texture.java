@@ -40,7 +40,7 @@ public class Texture implements Texturable, Transformable {
 
     @Getter @Setter private int[] defaultFrames = new int[]{0};
     @Getter private int totalFrame = 0;
-    @Getter private int frame = this.defaultFrames[0];
+    @Getter @Setter private int frame = this.defaultFrames[0];
 
     @Getter private int defaultLine = 0;
     @Getter private int totalLine = 0;
@@ -79,6 +79,8 @@ public class Texture implements Texturable, Transformable {
 
             GL40.glTexParameteri(GL40.GL_TEXTURE_RECTANGLE, GL40.GL_TEXTURE_MIN_FILTER, interpolation.value());
             GL40.glTexParameteri(GL40.GL_TEXTURE_RECTANGLE, GL40.GL_TEXTURE_MAG_FILTER, interpolation.value());
+
+            GL40.glTexParameteri(GL40.GL_TEXTURE_RECTANGLE, GL40.GL_ALPHA_TEST, interpolation.value());
 
             GL40.glTexImage2D(GL40.GL_TEXTURE_RECTANGLE, 0, GL40.GL_RGBA, this.imageSize.x, this.imageSize.y, 0, GL40.GL_RGBA, GL40.GL_UNSIGNED_BYTE, buffer);
             this.unbind();
@@ -144,7 +146,7 @@ public class Texture implements Texturable, Transformable {
         return this;
     }
 
-    private int closetDefault(int frame) {
+    private int closestDefault(int frame) {
         int distance = Math.abs(this.defaultFrames[0] - frame);
         int idx = 0;
         if(this.defaultFrames.length > 1) {
@@ -168,12 +170,12 @@ public class Texture implements Texturable, Transformable {
     public Matrix4f texCoordTransformation() {
         if (this.changed == 0) {
             this.changed = Clock.monotonic();
-            this.frame = this.closetDefault(this.frame);
+            this.frame = this.closestDefault(this.frame);
         }
 
         if(this.animated || this.returning) {
             if(this.returning) {
-                int closest = this.closetDefault(this.frame);
+                int closest = this.closestDefault(this.frame);
                 if (this.changed + this.returnFrameTime <= Clock.monotonic()) {
                     if(closest > this.frame) this.frame += 1;
                     else if(closest < this.frame) this.frame -= 1;

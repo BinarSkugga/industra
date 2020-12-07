@@ -98,6 +98,9 @@ public class Model implements Disposable, Drawable {
             texture.bind();
         }
         GL40.glDrawElements(GL40.GL_TRIANGLES, this.indicesCount, GL40.GL_UNSIGNED_INT, 0);
+        if (texture != null) {
+            texture.unbind();
+        }
         for (int i = 0; i < this.va.buffers().size(); i++) GL40.glDisableVertexAttribArray(i);
     }
 
