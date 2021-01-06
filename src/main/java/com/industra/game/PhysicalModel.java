@@ -6,7 +6,7 @@ package com.industra.game;
 
 import com.industra.engine.Disposable;
 import com.industra.engine.graphic.Drawable;
-import com.industra.engine.graphic.SimplifiedTransformable;
+import com.industra.engine.graphic.Transformable2D;
 import com.industra.engine.graphic.model.Model;
 import com.industra.engine.graphic.physics.CollisionBox;
 import com.industra.engine.graphic.texture.Texture;
@@ -18,7 +18,7 @@ import com.industra.utils.Clock;
 import lombok.Getter;
 import org.joml.Vector2f;
 
-public class PhysicalModel implements InputListener, Drawable, Disposable, SimplifiedTransformable {
+public class PhysicalModel implements InputListener, Drawable, Disposable, Transformable2D {
     // Pixel per second
     private float speed = 200f;
     // Complete rotation per second

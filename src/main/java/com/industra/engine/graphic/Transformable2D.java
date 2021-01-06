@@ -8,7 +8,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public interface SimplifiedTransformable extends Transformable {
+public interface Transformable2D extends Transformable {
     Vector2f position();
 
     // Scaling of the model for both the x and y axis

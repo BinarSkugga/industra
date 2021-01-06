@@ -5,6 +5,7 @@
 package com.industra.engine.graphic.physics;
 
 import com.industra.engine.graphic.Updatable;
+import com.industra.engine.input.InputTracker;
 import lombok.Getter;
 import lombok.Synchronized;
 import org.jbox2d.common.Vec2;
@@ -44,15 +45,16 @@ public class World {
         this(new Vec2(x, y));
     }
 
-    public void update(float delta, int velocityIter, int positionIter) {
+    public void update(long window, float delta, int velocityIter, int positionIter) {
         this.b2dworld.step(delta, velocityIter, positionIter);
+        InputTracker.get().update(window);
         this.updatables.parallelStream().forEach(u -> {
             u.update(this);
         });
     }
 
-    public void update(float delta) {
-        this.update(delta, 1, 1);
+    public void update(long window, float delta) {
+        this.update(window, delta, 6, 8);
     }
 
     public void addJoint(JointDef joint) {

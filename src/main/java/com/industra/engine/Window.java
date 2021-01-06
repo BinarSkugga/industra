@@ -69,10 +69,9 @@ public class Window implements Disposable, InputListener {
 
         while (!glfwWindowShouldClose(this.window)) {
             glfwPollEvents();
-            InputTracker.get().update(this.window);
 
             this.context.run();
-            this.world.update(Clock.deltaTime());
+            this.world.update(this.window, Clock.deltaTime());
 
             Clock.sync(60);
         }

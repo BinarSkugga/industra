@@ -5,7 +5,6 @@
 package com.industra.game.shaders;
 
 import com.industra.Constants;
-import com.industra.engine.graphic.BaseShaderable;
 import com.industra.engine.graphic.shader.ShaderProgram;
 import org.joml.Matrix4f;
 
