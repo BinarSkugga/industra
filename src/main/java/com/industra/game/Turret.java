@@ -5,6 +5,7 @@
 package com.industra.game;
 
 import com.industra.engine.Disposable;
+import com.industra.engine.Entity;
 import com.industra.engine.graphic.model.Model;
 import com.industra.engine.graphic.physics.CollisionBox;
 import com.industra.engine.graphic.texture.Texture;
@@ -12,23 +13,17 @@ import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
+import com.industra.game.components.BaseShaderComponent;
 import lombok.Getter;
 import org.joml.Vector2f;
 
 
-public class Turret  implements InputListener, Disposable, BaseShaderable {
-
-    @Getter private Model model;
-    @Getter private CollisionBox collisionBox;
-    @Getter private Texture texture;
-
+public class Turret extends Entity implements InputListener, Disposable, BaseShaderComponent {
     @Getter private float energyLevel = 0;
 
-    public Turret(Model model, CollisionBox box, Texture texture) {
+    public Turret(Model model, Texture texture, CollisionBox box) {
+        super(model, texture, box);
         InputTracker.get().subscribe(this);
-        this.model = model;
-        this.collisionBox = box;
-        this.texture = texture;
     }
 
     @Override

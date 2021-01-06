@@ -7,5 +7,5 @@ package com.industra.engine.graphic;
 import com.industra.engine.graphic.physics.World;
 
 public interface Updatable {
-    void update(World world);
+    default void update(World world) {}
 }

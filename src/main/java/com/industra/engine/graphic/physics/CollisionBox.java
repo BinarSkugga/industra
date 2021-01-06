@@ -4,6 +4,7 @@
 
 package com.industra.engine.graphic.physics;
 
+import com.industra.engine.Disposable;
 import com.industra.engine.graphic.Material;
 import com.industra.engine.graphic.Transformable;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import org.jbox2d.dynamics.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class CollisionBox implements Transformable {
+public class CollisionBox implements Transformable, Disposable {
     @Getter private static World world = World.get();
 
     @Getter private Vector2f size;
@@ -89,5 +90,10 @@ public class CollisionBox implements Transformable {
     @Override
     public Vector2f scale() {
         return this.size;
+    }
+
+    @Override
+    public void dispose() {
+        world.dispose(this);
     }
 }

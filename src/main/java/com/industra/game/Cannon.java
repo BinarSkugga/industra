@@ -4,32 +4,29 @@
 
 package com.industra.game;
 
-import com.industra.engine.Disposable;
+import com.industra.engine.Entity;
+import com.industra.engine.graphic.Texturable;
 import com.industra.engine.graphic.model.Model;
 import com.industra.engine.graphic.physics.CollisionBox;
 import com.industra.engine.graphic.physics.World;
 import com.industra.engine.graphic.texture.Texture;
-import com.industra.engine.input.InputList;
-import com.industra.engine.input.InputListener;
-import com.industra.engine.input.InputTracker;
-import com.industra.engine.input.Key;
+import com.industra.game.components.BaseShaderComponent;
+import com.industra.game.components.CannonControlComponent;
+import com.industra.game.components.CollisionComponent;
+import com.industra.game.components.SpriteComponent;
 import lombok.Getter;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 import org.joml.Vector2f;
 
-public class Cannon implements InputListener, Disposable, BaseShaderable {
-    @Getter private Model model;
-    @Getter private CollisionBox collisionBox;
-    @Getter private Texture texture;
-    private Turret turret;
+public class Cannon extends Entity {
+    public Cannon(Model model, Texture texture, CollisionBox box) {
+        this.add(new SpriteComponent(this, model, texture));
 
-    public Cannon(Model model, CollisionBox box, Texture texture) {
-        InputTracker.get().subscribe(this);
-        this.model = model;
-        this.collisionBox = box;
-        this.texture = texture;
+        CollisionComponent collision = new CollisionComponent(this, box);
+        collision.box().fixture().setFriction(500f);
 
-        this.collisionBox.fixture().setFriction(500f);
+        CannonControlComponent control = new CannonControlComponent(this, collision);
+        this.addAll(collision, control);
     }
 
     public Cannon turret(Turret turret) {
@@ -44,39 +41,28 @@ public class Cannon implements InputListener, Disposable, BaseShaderable {
         cannonJointDef.enableMotor = true;
         World.get().addJoint(cannonJointDef);
 
+        this.add(new BaseShaderComponent(this) {
+            @Override
+            public Texture texture() {
+                return this.parent.getClassComponent(SpriteComponent.class).texture();
+            }
+
+            @Override
+            public Vector2f position() {
+                return ((Cannon) this.parent).turret().position().add(this.parent.collisionBox.position());
+            }
+
+            @Override
+            public float rotationZ() {
+                return this.parent.collisionBox.rotation().z;
+            }
+
+            @Override
+            public float scaleXY() {
+                return this.collisionBox.scale().x;
+            }
+        });
+
         return this;
-    }
-
-    @Override
-    public Vector2f position() {
-        return this.turret.position().add(this.collisionBox.position());
-    }
-
-    @Override
-    public float rotationZ() {
-        return this.collisionBox.rotation().z;
-    }
-
-    @Override
-    public float scaleXY() {
-        return this.collisionBox.scale().x;
-    }
-
-    @Override
-    public void draw() {
-        this.model.draw(this.texture);
-    }
-
-    @Override
-    public void dispose() {
-        this.model.dispose();
-    }
-
-    @Override
-    public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
-        if(held.has(Key.Q))
-            this.collisionBox.torque(-1f);
-        if(held.has(Key.E))
-            this.collisionBox.torque(1f);
     }
 }

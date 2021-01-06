@@ -65,4 +65,8 @@ public class World {
         this.b2dworld.step(delta, 0, 0);
         this.joints.forEach(this.b2dworld::createJoint);
     }
+
+    public void dispose(CollisionBox box) {
+        this.b2dworld.destroyBody(box.body());
+    }
 }

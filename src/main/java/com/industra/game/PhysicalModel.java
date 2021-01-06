@@ -81,7 +81,6 @@ public class PhysicalModel implements InputListener, Drawable, Disposable, Trans
         if(this.running)
             this.texture.frameTime(100);
 
-        this.texture.animated(this.moving || this.running);
         this.texture.line(0);
 //        if (held.has(Key.W) || pressed.has(Key.W))
 //            this.texture.line(3);
