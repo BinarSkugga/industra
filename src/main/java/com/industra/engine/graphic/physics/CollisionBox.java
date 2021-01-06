@@ -4,9 +4,9 @@
 
 package com.industra.engine.graphic.physics;
 
-import com.industra.engine.Disposable;
 import com.industra.engine.graphic.Material;
 import com.industra.engine.graphic.Transformable;
+import com.industra.utils.Clock;
 import lombok.Getter;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -14,7 +14,7 @@ import org.jbox2d.dynamics.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class CollisionBox implements Transformable, Disposable {
+public class CollisionBox implements Transformable {
     @Getter private static World world = World.get();
 
     @Getter private Vector2f size;
@@ -33,13 +33,14 @@ public class CollisionBox implements Transformable, Disposable {
         this.material = material;
 
         this.shape = new PolygonShape();
-        this.shape.setAsBox(this.size.x, this.size.y);
+        this.shape.setAsBox(this.size.x / 2, this.size.y / 2);
 
         this.bodyDef = new BodyDef();
         this.bodyDef.type = this.material.type();
-        this.bodyDef.position.set(position.x, position.y);
-        this.bodyDef.angle = this.angle;
         this.body = world.b2dworld().createBody(this.bodyDef);
+
+        this.rotate(angle);
+        this.translate(position);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.friction = this.material.friction();
@@ -57,13 +58,17 @@ public class CollisionBox implements Transformable, Disposable {
         this(new Vector2f(1f, 1f), position, 0f, material);
     }
 
-    public void push(Vector2f force) {
-        force.mul(1000f, force);
-        this.body.applyForceToCenter(new Vec2(force.x, force.y));
+    public void push(Vec2 force) {
+        force.mulLocal(world.FORCE_CONSTANT);
+        this.body.applyForceToCenter(force);
     }
 
     public void torque(float torque) {
-        this.body.applyTorque(torque * 100000000f);
+        this.body.applyTorque(torque * world.FORCE_CONSTANT);
+    }
+
+    public void angularImpulse(float impulse) {
+        this.body.applyAngularImpulse(impulse * world.IMPULSE_CONSTANT);
     }
 
     public void translate(Vector2f vector) {
@@ -90,10 +95,5 @@ public class CollisionBox implements Transformable, Disposable {
     @Override
     public Vector2f scale() {
         return this.size;
-    }
-
-    @Override
-    public void dispose() {
-        world.dispose(this);
     }
 }

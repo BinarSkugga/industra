@@ -5,5 +5,5 @@
 package com.industra.engine;
 
 public interface Disposable {
-    default void dispose() {}
+    void dispose();
 }

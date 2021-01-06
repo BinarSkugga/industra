@@ -5,10 +5,10 @@
 package com.industra.engine.graphic.physics;
 
 import com.industra.engine.graphic.Updatable;
-import com.industra.engine.input.InputTracker;
 import lombok.Getter;
 import lombok.Synchronized;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.joints.JointDef;
 import org.joml.Vector2f;
 
@@ -16,8 +16,11 @@ import java.util.ArrayList;
 
 public class World {
     private static World instance;
+    public final float FORCE_CONSTANT = 100000000f;
+    public final float IMPULSE_CONSTANT = 5000000f;
 
     @Getter private final org.jbox2d.dynamics.World b2dworld;
+    @Getter private final float AIR_DENSITY = 0.1f;
     private ArrayList<JointDef> joints;
     private ArrayList<Updatable> updatables;
 
@@ -45,16 +48,33 @@ public class World {
         this(new Vec2(x, y));
     }
 
-    public void update(long window, float delta, int velocityIter, int positionIter) {
+    public void update(float delta, int velocityIter, int positionIter) {
         this.b2dworld.step(delta, velocityIter, positionIter);
-        InputTracker.get().update(window);
-        this.updatables.parallelStream().forEach(u -> {
+        this.updatables.forEach(u -> {
+            Body body = u.collisionBox().body();
+
+            // Apply angular air friction
+            float angularVel = body.getAngularVelocity();
+            float angularFriction = (angularVel * -1 * AIR_DENSITY);
+            body.applyTorque(angularFriction * FORCE_CONSTANT);
+
+            // Apply linear air friction
+            Vec2 drag = body.getLinearVelocity().clone();
+            drag.negateLocal(); drag.normalize();
+            body.applyForceToCenter(drag.mulLocal(AIR_DENSITY * 10000f));
+            System.out.println(body.getLinearVelocity() + ", " + drag);
+
+            // Execute the update callback
             u.update(this);
         });
     }
 
-    public void update(long window, float delta) {
-        this.update(window, delta, 6, 8);
+    public void update(float delta) {
+        this.update(delta, 8, 3);
+    }
+
+    public void register(Updatable updatable) {
+        this.updatables.add(updatable);
     }
 
     public void addJoint(JointDef joint) {
@@ -64,9 +84,5 @@ public class World {
     public void createJoints(float delta) {
         this.b2dworld.step(delta, 0, 0);
         this.joints.forEach(this.b2dworld::createJoint);
-    }
-
-    public void dispose(CollisionBox box) {
-        this.b2dworld.destroyBody(box.body());
     }
 }

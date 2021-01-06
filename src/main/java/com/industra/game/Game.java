@@ -44,16 +44,16 @@ public class Game implements Disposable {
 
         Cannon cannon = new Cannon(
                 Model.load("square"),
-                rm.getTexture("cannon_001"),
-                new CollisionBox(new Vector2f(60f), new Vector2f(-0.5f, -0.5f), defMat)
+                new CollisionBox(new Vector2f(60f), new Vector2f(5f, 5f), defMat),
+                rm.getTexture("cannon_001")
         );
         Turret turret = new Turret(
                 Model.load("square"),
-                rm.getTexture("turret_001"),
-                new CollisionBox(new Vector2f(60f), new Vector2f(150f, 150f), defMat)
+                new CollisionBox(new Vector2f(60f), new Vector2f(5f, 5f), defMat),
+                rm.getTexture("turret_001")
         );
         cannon.turret(turret);
-        baseShader.addEntities(cannon);
+        baseShader.addEntities(turret, cannon);
 
         rm.register(baseShader);
     }

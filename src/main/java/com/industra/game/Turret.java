@@ -5,26 +5,41 @@
 package com.industra.game;
 
 import com.industra.engine.Disposable;
-import com.industra.engine.Entity;
+import com.industra.engine.graphic.Updatable;
 import com.industra.engine.graphic.model.Model;
 import com.industra.engine.graphic.physics.CollisionBox;
+import com.industra.engine.graphic.BaseShaderable;
+import com.industra.engine.graphic.physics.World;
 import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
-import com.industra.game.components.BaseShaderComponent;
 import lombok.Getter;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.joints.*;
 import org.joml.Vector2f;
 
 
-public class Turret extends Entity implements InputListener, Disposable, BaseShaderComponent {
+public class Turret  implements InputListener, Updatable, Disposable, BaseShaderable {
+
+    @Getter private Model model;
+    @Getter private CollisionBox collisionBox;
+    @Getter private Texture texture;
+
     @Getter private float energyLevel = 0;
 
-    public Turret(Model model, Texture texture, CollisionBox box) {
-        super(model, texture, box);
+    public Turret(Model model, CollisionBox box, Texture texture) {
         InputTracker.get().subscribe(this);
+        World.get().register(this);
+
+        this.model = model;
+        this.collisionBox = box;
+        this.texture = texture;
     }
+
+    @Override
+    public void update(World world) {}
 
     @Override
     public Vector2f position() {
@@ -59,27 +74,35 @@ public class Turret extends Entity implements InputListener, Disposable, BaseSha
                 this.energyLevel += 5;
             else
                 this.energyLevel = 100;
-            System.out.println("Energy level: " + this.energyLevel);
         }
         else if(pressed.has(Key.DOWN)) {
             if(this.energyLevel - 5 >= 0)
                 this.energyLevel -= 5;
             else
                 this.energyLevel = 0;
-            System.out.println("Energy level: " + this.energyLevel);
         } else if(held.has(Key.UP)) {
             if(this.energyLevel + 1 <= 100)
                 this.energyLevel += 1;
             else
                 this.energyLevel = 100;
-            System.out.println("Energy level: " + this.energyLevel);
         } else if(held.has(Key.DOWN)) {
             if(this.energyLevel - 1 >= 0)
                 this.energyLevel -= 1;
             else
                 this.energyLevel = 0;
-            System.out.println("Energy level: " + this.energyLevel);
         }
+
+        Vec2 movingVector = new Vec2(0.0f, 0.0f);
+        if (held.has(Key.W) || pressed.has(Key.W))
+            movingVector.y = -1;
+        else if (held.has(Key.S) || pressed.has(Key.S))
+            movingVector.y = 1;
+        if (held.has(Key.A) || pressed.has(Key.A))
+            movingVector.x = -1;
+        else if (held.has(Key.D) || pressed.has(Key.D))
+            movingVector.x = 1;
+        movingVector.normalize();
+        this.collisionBox.push(movingVector);
     }
 
 }

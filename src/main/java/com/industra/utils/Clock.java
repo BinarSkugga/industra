@@ -10,57 +10,72 @@ import java.util.concurrent.TimeUnit;
 
 // TODO: This class needs some improvements
 public class Clock {
-    private static long MS_IN_SEC = TimeUnit.SECONDS.toMillis(1);
+    private static long NS_IN_SEC = TimeUnit.SECONDS.toNanos(1);
+    private static long NS_IN_MILLIS = TimeUnit.MILLISECONDS.toNanos(1);
 
-    private static long time = 0;
-    @Getter static private int initialFPS = 0;
-    private static long frameTime = 0;
-    @Getter static float deltaTime = 0;
-    @Getter static private int fps = 0;
-    @Getter static private long ms = 0;
     private static int fpsCount = 0;
-    private static long msCount = 0;
+    @Getter private static int fps;
+    private static long deltaCount = 0;
+    private static long frameDelta = 0;
+    private static long fullDelta;
 
-    public static long monotonic() {
-        return System.nanoTime() / 1000000;
+    private static long tick;
+    private static long frame;
+    private static boolean firstFrame = true;
+
+    public static float relativize(float speed) {
+        return speed / Clock.delta();
     }
 
     public static long delta() {
-        return monotonic() - time;
+        return Clock.fullDelta;
     }
 
-    public static float relativize(float speed) {
-        return speed * Clock.deltaTime;
+    public static float deltaMS() {
+        return Clock.fullDelta / (float)NS_IN_MILLIS;
     }
 
-    public static void sync(int fps) {
-        if(Clock.time > 0 && Clock.frameTime > 0) {
-            try {
-                long waitingTime = Clock.frameTime - delta();
-                if (waitingTime < 0) waitingTime = 0;
-                TimeUnit.MILLISECONDS.sleep(waitingTime);
-            } catch (InterruptedException e) {
-                Logger.error("Clock skipped a frame.");
+    public static float deltaS() {
+        return Clock.fullDelta / (float)NS_IN_SEC;
+    }
+
+    public static long monotonic() {
+        return System.nanoTime() / NS_IN_MILLIS;
+    }
+
+    public static void init(int maxFPS) {
+        Clock.frame = NS_IN_SEC / maxFPS;
+        Clock.tick = System.nanoTime();
+    }
+
+    public static void sync() {
+        if(!Clock.firstFrame) {
+            Clock.frameDelta = System.nanoTime() - Clock.tick;
+            long sleep = Clock.frame - Clock.frameDelta;
+
+            if (sleep > 0) {
+                long millis = sleep / NS_IN_MILLIS;
+                int nanos = (int) (sleep % NS_IN_MILLIS);
+                try { Thread.sleep(millis, nanos); }
+                catch (InterruptedException ignored) {
+                    System.err.println("Clock interrupted, losing " + millis + "ms");
+                }
             }
 
-            if (Clock.msCount >= MS_IN_SEC) {
-                Clock.fps = Clock.fpsCount;
-                Clock.ms = Clock.msCount;
+            Clock.fullDelta = System.nanoTime() - Clock.tick;
+            Clock.tick = System.nanoTime();
 
-                Clock.fpsCount = 0;
-                Clock.msCount = Clock.msCount - Clock.MS_IN_SEC;
-
-                Clock.deltaTime = delta() / 1000f;
-                Logger.out("FPS: " + Clock.fps);
-            }
-
+            Clock.deltaCount += Clock.frameDelta + sleep;
             Clock.fpsCount += 1;
-            Clock.msCount += delta();
-            Clock.time = monotonic();
+
+            if (Clock.deltaCount >= NS_IN_SEC) {
+                Clock.deltaCount = Clock.deltaCount - NS_IN_SEC;
+                Clock.fps = Clock.fpsCount;
+                Clock.fpsCount = 0;
+                System.out.println(Clock.fps + "fps, " + (Clock.fullDelta / NS_IN_MILLIS) + "ms");
+            }
         } else {
-            Clock.initialFPS = fps;
-            if (fps > 0) Clock.frameTime = Clock.MS_IN_SEC / fps;
-            Clock.time = monotonic();
+            Clock.firstFrame = false;
         }
     }
 

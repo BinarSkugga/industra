@@ -65,15 +65,17 @@ public class Window implements Disposable, InputListener {
     }
 
     public void run() {
-        this.world.createJoints(Clock.deltaTime());
+        this.world.createJoints(Clock.delta());
 
+        Clock.init(60);
         while (!glfwWindowShouldClose(this.window)) {
+            Clock.sync();
+
             glfwPollEvents();
+            InputTracker.get().update(this.window);
 
             this.context.run();
-            this.world.update(this.window, Clock.deltaTime());
-
-            Clock.sync(60);
+            this.world.update(Clock.deltaS());
         }
     }
 

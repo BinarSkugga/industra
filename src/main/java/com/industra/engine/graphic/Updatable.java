@@ -4,8 +4,10 @@
 
 package com.industra.engine.graphic;
 
+import com.industra.engine.graphic.physics.CollisionBox;
 import com.industra.engine.graphic.physics.World;
 
 public interface Updatable {
-    default void update(World world) {}
+    void update(World world);
+    CollisionBox collisionBox();
 }
