@@ -7,9 +7,9 @@ package com.industra.game;
 import com.industra.engine.Disposable;
 import com.industra.engine.graphic.Updatable;
 import com.industra.engine.graphic.model.Model;
-import com.industra.engine.graphic.physics.CollisionBox;
+import com.industra.engine.physic.CollisionBox;
 import com.industra.engine.graphic.BaseShaderable;
-import com.industra.engine.graphic.physics.World;
+import com.industra.engine.physic.World;
 import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
@@ -17,7 +17,6 @@ import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
 import lombok.Getter;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.joints.*;
 import org.joml.Vector2f;
 
 

@@ -6,7 +6,7 @@ package com.industra.engine;
 
 import com.industra.Constants;
 import com.industra.engine.graphic.GLContext;
-import com.industra.engine.graphic.physics.World;
+import com.industra.engine.physic.World;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
@@ -17,13 +17,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.util.Timer;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Window implements Disposable, InputListener {
     private static Window instance;
-    private static Timer timer;
 
     @Getter private long window;
     @Getter private int width, height;
@@ -65,15 +62,14 @@ public class Window implements Disposable, InputListener {
     }
 
     public void run() {
-        this.world.createJoints(Clock.delta());
+        this.world.createJoints(Clock.deltaS());
 
         Clock.init(60);
         while (!glfwWindowShouldClose(this.window)) {
             Clock.sync();
-
-            glfwPollEvents();
             InputTracker.get().update(this.window);
 
+            glfwPollEvents();
             this.context.run();
             this.world.update(Clock.deltaS());
         }

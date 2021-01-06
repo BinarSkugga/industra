@@ -4,8 +4,8 @@
 
 package com.industra.engine.graphic;
 
-import com.industra.engine.graphic.physics.CollisionBox;
-import com.industra.engine.graphic.physics.World;
+import com.industra.engine.physic.CollisionBox;
+import com.industra.engine.physic.World;
 
 public interface Updatable {
     void update(World world);

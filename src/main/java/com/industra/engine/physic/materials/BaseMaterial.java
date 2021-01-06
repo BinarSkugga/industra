@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic.physics.materials;
+package com.industra.engine.physic.materials;
 
 import com.industra.engine.graphic.Material;
 import org.jbox2d.dynamics.BodyType;

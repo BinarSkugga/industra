@@ -2,11 +2,10 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic.physics;
+package com.industra.engine.physic;
 
 import com.industra.engine.graphic.Material;
 import com.industra.engine.graphic.Transformable;
-import com.industra.utils.Clock;
 import lombok.Getter;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;

@@ -8,7 +8,7 @@ import com.industra.engine.Disposable;
 import com.industra.engine.graphic.Drawable;
 import com.industra.engine.graphic.SimplifiedTransformable;
 import com.industra.engine.graphic.model.Model;
-import com.industra.engine.graphic.physics.CollisionBox;
+import com.industra.engine.physic.CollisionBox;
 import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.input.InputList;
 import com.industra.engine.input.InputListener;

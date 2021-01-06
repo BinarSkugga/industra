@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Charles Smith
  */
 
-package com.industra.engine.graphic.physics;
+package com.industra.engine.physic;
 
 import com.industra.engine.graphic.Updatable;
 import lombok.Getter;
@@ -18,9 +18,9 @@ public class World {
     private static World instance;
     public final float FORCE_CONSTANT = 100000000f;
     public final float IMPULSE_CONSTANT = 5000000f;
+    public final float AIR_DENSITY = 1f;
 
     @Getter private final org.jbox2d.dynamics.World b2dworld;
-    @Getter private final float AIR_DENSITY = 0.1f;
     private ArrayList<JointDef> joints;
     private ArrayList<Updatable> updatables;
 
@@ -55,14 +55,13 @@ public class World {
 
             // Apply angular air friction
             float angularVel = body.getAngularVelocity();
-            float angularFriction = (angularVel * -1 * AIR_DENSITY);
+            float angularFriction = (angularVel * -1 * AIR_DENSITY / 10f);
             body.applyTorque(angularFriction * FORCE_CONSTANT);
 
             // Apply linear air friction
             Vec2 drag = body.getLinearVelocity().clone();
-            drag.negateLocal(); drag.normalize();
-            body.applyForceToCenter(drag.mulLocal(AIR_DENSITY * 10000f));
-            System.out.println(body.getLinearVelocity() + ", " + drag);
+            drag.negateLocal(); drag.mulLocal(AIR_DENSITY);
+            body.applyForceToCenter(drag.mulLocal(10000f));
 
             // Execute the update callback
             u.update(this);
