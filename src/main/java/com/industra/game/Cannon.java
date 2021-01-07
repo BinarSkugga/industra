@@ -4,85 +4,43 @@
 
 package com.industra.game;
 
-import com.industra.engine.Disposable;
-import com.industra.engine.graphic.BaseShaderable;
-import com.industra.engine.graphic.Updatable;
-import com.industra.engine.graphic.model.Model;
+import com.industra.engine.Controllable;
+import com.industra.engine.graphic.model.TexturedModel;
 import com.industra.engine.physic.CollisionBox;
 import com.industra.engine.physic.World;
 import com.industra.engine.graphic.texture.Texture;
-import com.industra.engine.input.InputList;
-import com.industra.engine.input.InputListener;
-import com.industra.engine.input.InputTracker;
-import com.industra.engine.input.Key;
-import lombok.Getter;
+import com.industra.engine.physic.materials.BaseMaterial;
+import com.industra.game.composer.Entity2D;
+import com.industra.game.composer.impl.CollisionComponent;
+import com.industra.game.composer.impl.TexturedModelComponent;
+import com.industra.game.composer.impl.input.CannonInputComponent;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 import org.joml.Vector2f;
 
-public class Cannon implements InputListener, Disposable, Updatable, BaseShaderable {
-    @Getter private Model model;
-    @Getter private CollisionBox collisionBox;
-    @Getter private Texture texture;
-    private Turret turret;
+public class Cannon extends Entity2D implements Controllable {
+    public Cannon() {
+        Texture texture = new Texture("cannon_001").animated(false);
+        CollisionBox collisionBox = new CollisionBox(new Vector2f(60f), new BaseMaterial());
 
-    public Cannon(Model model, CollisionBox box, Texture texture) {
-        InputTracker.get().subscribe(this);
-        World.get().register(this);
+        this.addAll(
+                new TexturedModelComponent(this, TexturedModel.load("square", texture)),
+                new CollisionComponent(this, collisionBox)
+        );
 
-        this.model = model;
-        this.collisionBox = box;
-        this.texture = texture;
+        this.add(new CannonInputComponent(this));
     }
 
     public Cannon turret(Turret turret) {
-        this.turret = turret;
+        CollisionComponent cc = this.getComponent(CollisionComponent.class);
 
         RevoluteJointDef revoluteJD = new RevoluteJointDef();
-        revoluteJD.bodyA = this.turret.collisionBox().body();
-        revoluteJD.bodyB = this.collisionBox().body();
+        revoluteJD.bodyA = turret.getComponent(CollisionComponent.class).box().body();
+        revoluteJD.bodyB = cc.box().body();
         revoluteJD.collideConnected = false;
         revoluteJD.localAnchorA.set(0, 0);
         revoluteJD.localAnchorB.set(0, 0);
         World.get().addJoint(revoluteJD);
 
-
         return this;
-    }
-
-    @Override
-    public void update(World world) {
-    }
-
-    @Override
-    public Vector2f position() {
-        return this.turret.position();
-    }
-
-    @Override
-    public float rotationZ() {
-        return this.collisionBox.rotation().z;
-    }
-
-    @Override
-    public float scaleXY() {
-        return this.collisionBox.scale().x;
-    }
-
-    @Override
-    public void draw() {
-        this.model.draw(this.texture);
-    }
-
-    @Override
-    public void dispose() {
-        this.model.dispose();
-    }
-
-    @Override
-    public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
-        if(held.has(Key.Q))
-            this.collisionBox.torque(-1f);
-        if(held.has(Key.E))
-            this.collisionBox.torque(1f);
     }
 }

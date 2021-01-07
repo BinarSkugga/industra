@@ -6,6 +6,8 @@ package com.industra.engine;
 
 import com.industra.engine.graphic.texture.Texture;
 import com.industra.engine.graphic.texture.TextureAtlas;
+import com.industra.game.composer.Component;
+import com.industra.game.composer.Entity2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +34,13 @@ public class ResourceManager implements Disposable {
 
     public void unregister(Disposable... elements) {
         this.resources.removeAll(Arrays.asList(elements));
+    }
+
+    public void register(Entity2D... elements) {
+        for(Entity2D e : elements) {
+            for(Component c : e)
+                c.register(this);
+        }
     }
 
     public <T extends Disposable> List<T> getByClass(Class<T> clazz) {

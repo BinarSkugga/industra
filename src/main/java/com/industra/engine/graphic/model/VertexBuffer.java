@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.opengl.GL40;
 
-public abstract class VertexBuffer implements Disposable, Bindable {
+public abstract class VertexBuffer<T> implements Disposable, Bindable {
     @Getter protected int id;
     @Getter @Setter private int target = GL40.GL_ARRAY_BUFFER;
     @Getter @Setter private int usage = GL40.GL_STATIC_DRAW;
@@ -33,4 +33,6 @@ public abstract class VertexBuffer implements Disposable, Bindable {
     public void dispose() {
         GL40.glDeleteBuffers(this.id);
     }
+
+    public abstract T data();
 }

@@ -5,12 +5,17 @@
 package com.industra.game.shaders;
 
 import com.industra.Constants;
-import com.industra.engine.graphic.BaseShaderable;
 import com.industra.engine.graphic.shader.ShaderProgram;
+import com.industra.game.composer.impl.TexturedModelComponent;
 import org.joml.Matrix4f;
 
-public class BaseShader extends ShaderProgram<BaseShaderable> {
+public class BaseShader extends ShaderProgram<TexturedModelComponent> {
     private Matrix4f ortho;
+
+    public interface ShaderInterface {
+        Matrix4f transformation();
+        Matrix4f textureTransformation();
+    }
 
     public BaseShader() {
         super("base");
@@ -18,10 +23,10 @@ public class BaseShader extends ShaderProgram<BaseShaderable> {
     }
 
     @Override
-    public void accept(BaseShaderable object) {
+    public void accept(TexturedModelComponent object) {
         this.load("projection", this.ortho);
         this.load("transformation", object.transformation());
-        this.load("texCoordTransformation", object.texture().texCoordTransformation());
+        this.load("texCoordTransformation", object.textureTransformation());
     }
 
     @Override

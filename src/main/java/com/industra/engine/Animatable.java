@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2020 Charles Smith
+ * Copyright (c) 2021 Charles Smith
  */
 
-package com.industra.engine.graphic;
+package com.industra.engine;
 
 import com.industra.utils.Clock;
 import org.joml.Matrix4f;

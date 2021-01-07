@@ -11,8 +11,10 @@ import org.lwjgl.opengl.GL40;
 
 import java.nio.FloatBuffer;
 
-public class FloatVertexBuffer extends VertexBuffer {
-    @Getter private FloatBuffer data;
+public class FloatVertexBuffer extends VertexBuffer<float[]> {
+    @Getter private FloatBuffer bufferData;
+    @Getter private float[] data;
+
     @Getter private int type = GL40.GL_FLOAT;
 
     public FloatVertexBuffer(@NonNull float[] data) {
@@ -25,6 +27,7 @@ public class FloatVertexBuffer extends VertexBuffer {
         buffer.put(data);
         buffer.flip();
 
-        this.data = buffer;
+        this.data = data;
+        this.bufferData = buffer;
     }
 }

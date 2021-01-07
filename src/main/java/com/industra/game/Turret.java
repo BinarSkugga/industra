@@ -4,104 +4,32 @@
 
 package com.industra.game;
 
-import com.industra.engine.Disposable;
-import com.industra.engine.graphic.Updatable;
-import com.industra.engine.graphic.model.Model;
+import com.industra.engine.graphic.model.TexturedModel;
 import com.industra.engine.physic.CollisionBox;
-import com.industra.engine.graphic.BaseShaderable;
-import com.industra.engine.physic.World;
 import com.industra.engine.graphic.texture.Texture;
-import com.industra.engine.input.InputList;
-import com.industra.engine.input.InputListener;
-import com.industra.engine.input.InputTracker;
-import com.industra.engine.input.Key;
+import com.industra.engine.Controllable;
+import com.industra.engine.physic.materials.BaseMaterial;
+import com.industra.game.composer.Entity2D;
+import com.industra.game.composer.impl.CollisionComponent;
+import com.industra.game.composer.impl.TexturedModelComponent;
+import com.industra.game.composer.impl.input.TurretInputComponent;
 import lombok.Getter;
-import org.jbox2d.common.Vec2;
+import lombok.Setter;
 import org.joml.Vector2f;
 
 
-public class Turret  implements InputListener, Updatable, Disposable, BaseShaderable {
+public class Turret extends Entity2D implements Controllable {
+    @Getter @Setter public float energy = 0;
 
-    @Getter private Model model;
-    @Getter private CollisionBox collisionBox;
-    @Getter private Texture texture;
+    public Turret() {
+        Texture texture = new Texture("turret_001").animated(false);
+        CollisionBox collisionBox = new CollisionBox(new Vector2f(60f), new BaseMaterial());
 
-    @Getter private float energyLevel = 0;
+        this.addAll(
+                new TexturedModelComponent(this, TexturedModel.load("square", texture)),
+                new CollisionComponent(this, collisionBox)
+        );
 
-    public Turret(Model model, CollisionBox box, Texture texture) {
-        InputTracker.get().subscribe(this);
-        World.get().register(this);
-
-        this.model = model;
-        this.collisionBox = box;
-        this.texture = texture;
+        this.add(new TurretInputComponent(this));
     }
-
-    @Override
-    public void update(World world) {}
-
-    @Override
-    public Vector2f position() {
-        return this.collisionBox.position();
-    }
-
-    @Override
-    public float rotationZ() {
-        return this.collisionBox.rotation().z;
-    }
-
-    @Override
-    public float scaleXY() {
-        return this.collisionBox.scale().x;
-    }
-
-    @Override
-    public void draw() {
-        this.texture.frame((int)Math.floor(this.energyLevel * (this.texture.totalFrame()-1) / 100f));
-        this.model.draw(this.texture);
-    }
-
-    @Override
-    public void dispose() {
-        this.model.dispose();
-    }
-
-    @Override
-    public void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
-        if(pressed.has(Key.UP)) {
-            if(this.energyLevel + 5 <= 100)
-                this.energyLevel += 5;
-            else
-                this.energyLevel = 100;
-        }
-        else if(pressed.has(Key.DOWN)) {
-            if(this.energyLevel - 5 >= 0)
-                this.energyLevel -= 5;
-            else
-                this.energyLevel = 0;
-        } else if(held.has(Key.UP)) {
-            if(this.energyLevel + 1 <= 100)
-                this.energyLevel += 1;
-            else
-                this.energyLevel = 100;
-        } else if(held.has(Key.DOWN)) {
-            if(this.energyLevel - 1 >= 0)
-                this.energyLevel -= 1;
-            else
-                this.energyLevel = 0;
-        }
-
-        Vec2 movingVector = new Vec2(0.0f, 0.0f);
-        if (held.has(Key.W) || pressed.has(Key.W))
-            movingVector.y = -1;
-        else if (held.has(Key.S) || pressed.has(Key.S))
-            movingVector.y = 1;
-        if (held.has(Key.A) || pressed.has(Key.A))
-            movingVector.x = -1;
-        else if (held.has(Key.D) || pressed.has(Key.D))
-            movingVector.x = 1;
-        movingVector.normalize();
-        this.collisionBox.push(movingVector);
-    }
-
 }

@@ -4,8 +4,8 @@
 
 package com.industra.engine.graphic.texture;
 
-import com.industra.engine.graphic.Texturable;
-import com.industra.engine.graphic.Transformable;
+import com.industra.engine.Texturable;
+import com.industra.engine.Transformable;
 import com.industra.utils.Clock;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import lombok.Getter;
@@ -30,9 +30,9 @@ public class Texture implements Texturable, Transformable {
     @Getter private String name;
 
     @Getter private Vector2i imageSize;
-    @Getter private Vector2f scale;
+    @Getter private Vector3f scale;
     @Getter private Vector2f rootPosition;
-    @Getter private Vector2f position;
+    @Getter private Vector3f position;
     @Getter private float scaler;
 
     @Getter @Setter private int frameTime = 300;
@@ -54,14 +54,14 @@ public class Texture implements Texturable, Transformable {
         try {
             this.name = name;
             this.rootPosition = new Vector2f(0f, 0f);
-            this.position = new Vector2f(0f, 0f);
+            this.position = new Vector3f(0f, 0f, 0f);
 
             InputStream textureStream = Texture.class.getClassLoader().getResourceAsStream("textures/" + name + ".png");
             PNGDecoder decoder = new PNGDecoder(textureStream);
             this.imageSize = new Vector2i(decoder.getWidth(), decoder.getHeight());
 
             this.scaler = Math.min(this.imageSize.x, this.imageSize.y);
-            this.scale = new Vector2f(this.scaler, this.scaler);
+            this.scale = new Vector3f(this.scaler, this.scaler, 0f);
 
             if(this.imageSize.x != this.imageSize.y) {
                 this.totalFrame = Math.max(this.imageSize.x, this.imageSize.y) / (int) scaler;
@@ -97,11 +97,11 @@ public class Texture implements Texturable, Transformable {
         this.name = name;
         this.id = atlas.texture().id;
         this.rootPosition = position;
-        this.position = new Vector2f(0f, 0f);
+        this.position = new Vector3f(0f, 0f, 0f);
         this.imageSize = size;
 
         this.scaler = Math.min(this.imageSize.x, this.imageSize.y);
-        this.scale = new Vector2f(this.scaler, this.scaler);
+        this.scale = new Vector3f(this.scaler, this.scaler, 0f);
 
         if(this.imageSize.x != this.imageSize.y) {
             this.totalFrame = Math.max(this.imageSize.x, this.imageSize.y) / (int) this.scaler;
@@ -141,7 +141,7 @@ public class Texture implements Texturable, Transformable {
     public Texture multiLine(Vector2f scale) {
         this.totalLine = (int)(this.imageSize.y / scale.y);
         this.totalFrame = (int)(this.imageSize.x / scale.x);
-        this.scale = scale;
+        this.scale = new Vector3f(scale, 0f);
 
         return this;
     }
@@ -200,9 +200,9 @@ public class Texture implements Texturable, Transformable {
         if(this.totalLine > 0)
             this.rootPosition.y = this.line * this.scale.y;
 
-        this.position.add(this.rootPosition);
+        this.position.add(new Vector3f(this.rootPosition, 0f));
         Matrix4f transformation = this.transformation();
-        this.position.sub(this.rootPosition);
+        this.position.sub(new Vector3f(this.rootPosition, 0f));
 
         return transformation;
     }

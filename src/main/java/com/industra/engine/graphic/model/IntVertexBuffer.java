@@ -11,8 +11,10 @@ import org.lwjgl.opengl.GL40;
 
 import java.nio.IntBuffer;
 
-public class IntVertexBuffer extends VertexBuffer {
-    @Getter private IntBuffer data;
+public class IntVertexBuffer extends VertexBuffer<int[]> {
+    @Getter private IntBuffer bufferData;
+    @Getter private int[] data;
+
     @Getter private int type = GL40.GL_INT;
 
     public IntVertexBuffer(@NonNull int[] data) {
@@ -25,6 +27,7 @@ public class IntVertexBuffer extends VertexBuffer {
         buffer.put(data);
         buffer.flip();
 
-        this.data = buffer;
+        this.data = data;
+        this.bufferData = buffer;
     }
 }

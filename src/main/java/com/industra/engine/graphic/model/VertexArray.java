@@ -18,8 +18,8 @@ public class VertexArray implements Disposable, Bindable {
     private static int LAST_BIND = 0;
 
     private int id;
-    @Getter private VertexBuffer indices;
-    @Getter private List<VertexBuffer> buffers = new ArrayList<>();
+    @Getter private VertexBuffer<int[]> indices;
+    @Getter private List<VertexBuffer<?>> buffers = new ArrayList<>();
 
     public VertexArray() {
         this.id = GL40.glGenVertexArrays();
@@ -27,7 +27,7 @@ public class VertexArray implements Disposable, Bindable {
 
     public void addFloat(@NonNull FloatVertexBuffer vbo, int size) {
         vbo.bind();
-        GL40.glBufferData(vbo.target(), vbo.data(), vbo.usage());
+        GL40.glBufferData(vbo.target(), vbo.bufferData(), vbo.usage());
         GL40.glVertexAttribPointer(buffers.size(), size, vbo.type(), false, 0, 0);
         vbo.unbind();
 
@@ -40,7 +40,7 @@ public class VertexArray implements Disposable, Bindable {
 
     public void addInt(@NonNull IntVertexBuffer vbo, int size) {
         vbo.bind();
-        GL40.glBufferData(vbo.target(), vbo.data(), vbo.usage());
+        GL40.glBufferData(vbo.target(), vbo.bufferData(), vbo.usage());
         GL40.glVertexAttribPointer(buffers.size(), size, vbo.type(), false, 0, 0);
         vbo.unbind();
 
@@ -55,7 +55,8 @@ public class VertexArray implements Disposable, Bindable {
         vbo.target(GL40.GL_ELEMENT_ARRAY_BUFFER);
 
         vbo.bind();
-        GL40.glBufferData(vbo.target(), vbo.data(), vbo.usage());
+        vbo.bind();
+        GL40.glBufferData(vbo.target(), vbo.bufferData(), vbo.usage());
         this.indices = vbo;
     }
 

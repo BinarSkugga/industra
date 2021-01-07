@@ -4,7 +4,7 @@
 
 package com.industra.engine.physic;
 
-import com.industra.engine.graphic.Updatable;
+import com.industra.engine.Collidable;
 import lombok.Getter;
 import lombok.Synchronized;
 import org.jbox2d.common.Vec2;
@@ -16,13 +16,12 @@ import java.util.ArrayList;
 
 public class World {
     private static World instance;
-    public final float FORCE_CONSTANT = 100000000f;
-    public final float IMPULSE_CONSTANT = 5000000f;
-    public final float AIR_DENSITY = 1f;
+    public final static float FORCE_CONSTANT = 100000000f;
+    public final static float AIR_DENSITY = 1f;
 
     @Getter private final org.jbox2d.dynamics.World b2dworld;
-    private ArrayList<JointDef> joints;
-    private ArrayList<Updatable> updatables;
+    private final ArrayList<JointDef> joints;
+    private final ArrayList<Collidable> collidables;
 
     @Synchronized
     public static World get() {
@@ -32,7 +31,7 @@ public class World {
     public World(Vec2 gravity) {
         this.b2dworld = new org.jbox2d.dynamics.World(gravity);
         this.joints = new ArrayList<>();
-        this.updatables = new ArrayList<>();
+        this.collidables = new ArrayList<>();
         instance = this;
     }
 
@@ -50,8 +49,8 @@ public class World {
 
     public void update(float delta, int velocityIter, int positionIter) {
         this.b2dworld.step(delta, velocityIter, positionIter);
-        this.updatables.forEach(u -> {
-            Body body = u.collisionBox().body();
+        this.collidables.forEach(u -> {
+            Body body = u.box().body();
 
             // Apply angular air friction
             float angularVel = body.getAngularVelocity();
@@ -64,7 +63,7 @@ public class World {
             body.applyForceToCenter(drag.mulLocal(10000f));
 
             // Execute the update callback
-            u.update(this);
+            u.update();
         });
     }
 
@@ -72,8 +71,8 @@ public class World {
         this.update(delta, 8, 3);
     }
 
-    public void register(Updatable updatable) {
-        this.updatables.add(updatable);
+    public void register(Collidable collidable) {
+        this.collidables.add(collidable);
     }
 
     public void addJoint(JointDef joint) {

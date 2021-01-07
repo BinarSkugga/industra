@@ -4,6 +4,7 @@
 
 package com.industra.engine.input;
 
+import com.industra.engine.Controllable;
 import lombok.Synchronized;
 
 import java.util.*;
@@ -30,7 +31,7 @@ public class InputTracker {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Map<Integer, Integer> trackedStates = new HashMap<>();
     private Map<Integer, Long> trackedDPressed = new HashMap<>();
-    private List<InputListener> listeners = new ArrayList<>();
+    private List<Controllable> listeners = new ArrayList<>();
 
     private InputTracker() {
         List<Integer> tracked = Arrays.stream(Key.class.getDeclaredFields())
@@ -54,7 +55,7 @@ public class InputTracker {
         return tracker;
     }
 
-    public void subscribe(InputListener listener) {
+    public void subscribe(Controllable listener) {
         this.listeners.add(listener);
     }
 

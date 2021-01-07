@@ -8,7 +8,6 @@ import com.industra.Constants;
 import com.industra.engine.graphic.GLContext;
 import com.industra.engine.physic.World;
 import com.industra.engine.input.InputList;
-import com.industra.engine.input.InputListener;
 import com.industra.engine.input.InputTracker;
 import com.industra.engine.input.Key;
 import com.industra.utils.Clock;
@@ -19,7 +18,7 @@ import lombok.Setter;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Window implements Disposable, InputListener {
+public class Window implements Disposable, Controllable {
     private static Window instance;
 
     @Getter private long window;

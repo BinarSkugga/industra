@@ -1,10 +1,12 @@
 /*
- * Copyright (c) 2020 Charles Smith
+ * Copyright (c) 2021 Charles Smith
  */
 
-package com.industra.engine.input;
+package com.industra.engine;
 
-public interface InputListener {
+import com.industra.engine.input.InputList;
+
+public interface Controllable {
     default void onKeyboardInput(InputList pressed, InputList dpressed, InputList held, InputList released, InputList idle) {
     }
 

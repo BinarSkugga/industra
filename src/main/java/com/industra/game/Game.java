@@ -31,30 +31,13 @@ public class Game implements Disposable {
     public void init() {
         ResourceManager rm = ResourceManager.get();
 
-        // Textures
-        rm.register(new TextureAtlas("main"));
-        rm.register(new Texture("turret_001").multiLine(new Vector2f(49)));
-        rm.register(new Texture("cannon_001").animated(false));
-
-        // Material
-        Material defMat = new BaseMaterial();
-
         // Shaders & Models
         BaseShader baseShader = new BaseShader();
 
-        Cannon cannon = new Cannon(
-                Model.load("square"),
-                new CollisionBox(new Vector2f(60f), new Vector2f(5f, 5f), defMat),
-                rm.getTexture("cannon_001")
-        );
-        Turret turret = new Turret(
-                Model.load("square"),
-                new CollisionBox(new Vector2f(60f), new Vector2f(5f, 5f), defMat),
-                rm.getTexture("turret_001")
-        );
-        cannon.turret(turret);
-        baseShader.addEntities(turret, cannon);
+        Turret turret = new Turret();
+        Cannon cannon = new Cannon().turret(turret);
 
+        baseShader.addEntities(turret, cannon);
         rm.register(baseShader);
     }
 
